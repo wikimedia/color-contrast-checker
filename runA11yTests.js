@@ -77,11 +77,9 @@ const getConfig = require( './a11y.config.js' );
  */
 async function runTests( opts ) {
 	if (
-		!process.env.MW_SERVER ||
-		!process.env.MEDIAWIKI_USER ||
-		!process.env.MEDIAWIKI_PASSWORD
+		!process.env.MW_SERVER
 	) {
-		throw new Error( 'Missing env variables' );
+		throw new Error( 'Missing env variable. Please run `export MW_SERVER=https://en.wikipedia.org`' );
 	}
 
 	const getConfigFunction = getConfig(); // Invoking the exported function
