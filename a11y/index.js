@@ -7,9 +7,14 @@ const createParagraph = (text) => {
     reportNode.textContent = text;
     return reportNode;
 };
-const makeColumn = (text, tagName) => {
-    let colNode = document.createElement(tagName||'td');
-    colNode.textContent = text;
+const makeColumn = (text, tagName, url) => {
+    const colNode = document.createElement(tagName||'td');
+    const child = document.createElement( url ? 'a' : 'span');
+    if ( url ) {
+        child.href = url;
+    }
+    child.textContent = text;
+    colNode.appendChild(child);
     return colNode;
 };
 const generalizeSelector = (text) => {
@@ -29,7 +34,13 @@ fetch('simplifiedList.csv').then((r) => r.text())
             const rowNode = document.createElement('tr');
             const cols = row.split(',').map((col) => col.replace(/"/g, ''));
             cols.forEach(( text, j ) => {
-                rowNode.appendChild(makeColumn(text,i === 0 ? 'th' : 'td'));
+                rowNode.appendChild(
+                    makeColumn(
+                        text,
+                        i === 0 ? 'th' : 'td',
+                        j === 0 ? `https://en.wikipedia.org/wiki/${encodeURIComponent(text)}` : null
+                    )
+                );
                 if (i > 0) {
                     if ( j === 0 ) {
                         if ( !titles[text] ) {
