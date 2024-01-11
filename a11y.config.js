@@ -24,8 +24,8 @@ const oneDayAgo = new Date( currentDate );
 oneDayAgo.setDate( oneDayAgo.getDate() - 1 );
 
 // Retrieve the top Wikipedia articles using the Wikimedia API.
-async function getTopWikipediaArticles( limit = 3 ) {
-	const endpoint = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/en.wikipedia/all-access/${getFormattedDate( oneDayAgo )}`;
+async function getTopWikipediaArticles( project, limit = 3 ) {
+	const endpoint = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${project}/all-access/${getFormattedDate( oneDayAgo )}`;
 
 	try {
 		const response = await fetch( endpoint );
@@ -33,7 +33,9 @@ async function getTopWikipediaArticles( limit = 3 ) {
 		if ( response.ok ) {
 			const data = await response.json();
 			const articles = data.items[ 0 ].articles.slice( 0, limit );
-			return articles;
+			return articles.map( ( a ) => Object.assign( {}, a, {
+				project: `https://${project}.org`
+			} ) );
 		} else {
 // eslint-disable-next-line no-console
 			console.error( `Error: ${response.status}` );
@@ -48,20 +50,33 @@ async function getTopWikipediaArticles( limit = 3 ) {
 
 // Creates test cases based on the top Wikipedia articles obtained from getTopWikipediaArticles.
 async function createTestCases() {
-	const topArticles = await getTopWikipediaArticles();
-
+	const topArticles = await Promise.all(
+		[
+			getTopWikipediaArticles( 'en.wikipedia' ),
+			getTopWikipediaArticles( 'fr.wikipedia' )
+		]
+	);
+	const STATIC_TEST_SET = [
+		{
+			article: '81st_Golden_Globe_Awards',
+			project: 'https://en.wikipedia.org'
+		},
+		{
+			article: 'Saltburn_(film)',
+			project: 'https://en.wikipedia.org'
+		}
+	];
 	if ( !topArticles ) {
 		console.error( 'Failed to fetch top articles.' );
 		return null;
 	}
 
 	// Use the production URL directly
-	const prodUrl = 'https://en.wikipedia.org/wiki/';
-	const testCases = topArticles.map( ( article ) => {
+	const testCases = topArticles.flat( 1 ).concat( STATIC_TEST_SET ).map( ( article ) => {
 		const encodedTitle = encodeURIComponent( article.article );
 		return {
 			name: `${encodedTitle}`,
-			url: `${prodUrl}${encodedTitle}`,
+			url: `${article.project}/wiki/${encodedTitle}`,
 			actions: [],
 			rules: ['Principle1.Guideline1_3.1_3_1_AAA'],
 			// head: '<link rel="stylesheet" href="/path/to/your/stylesheet.css">'
