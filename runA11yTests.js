@@ -5,6 +5,9 @@ const pa11y = require( 'pa11y' );
 const { program } = require( 'commander' );
 const util = require( 'util' );
 
+const htmlReporter = require( path.resolve( __dirname, './reporter/reporter.js' ) );
+const reportTemplate = fs.readFileSync( path.resolve( __dirname, './reporter/report.mustache' ), 'utf8' );
+
 const writeFileAsync = util.promisify( fs.writeFile );
 /**
  *  Delete and recreate the report directory
@@ -148,6 +151,16 @@ async function runTests( opts ) {
 		item.simplifiedList.map( ( { selector, context } ) => ( { name: item.name, selector, context } ) )
 	);
 
+	// Generate HTML report
+	async function generateHtmlReport( flattenedList, reportTemplate, reportDir ) {
+		const html = await htmlReporter.results( flattenedList, reportTemplate );
+		await fs.promises.writeFile( `${reportDir}/report.html`, html, 'utf8' );
+	}
+
+	// Save in html report
+	await generateHtmlReport( flattenedList, reportTemplate, config.reportDir );
+
+	// Save in a .csv
 	await writeSimplifiedListToCSV( flattenedList, config.reportDir, 'simplifiedList.csv' );
 }
 
