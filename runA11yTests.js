@@ -17,6 +17,34 @@ function resetReportDir( config ) {
 	fs.mkdirSync( config.reportDir, { recursive: true } );
 }
 
+// FIXME: Temporary pa11y workaround for color
+// contrast errors in two groups – first valid, second
+// invalid. Not suitable for production.
+// Switch to axe-core for better accuracy.
+function extractColorContrastInstances( data ) {
+	const colorContrastInstances = [];
+	let addingToArray = false;
+
+	for ( let i = 0; i < data.issues.length; i++ ) {
+		const issue = data.issues[i];
+
+		if ( issue.code === 'color-contrast' ) {
+			if ( !addingToArray ) {
+				// Start adding to the array
+				addingToArray = true;
+			}
+			// Add the current issue to the array
+			colorContrastInstances.push( issue );
+		} else if ( addingToArray && i > 0 && data.issues[i].code !== 'color-contrast' && data.issues[i - 1].code === 'color-contrast' ) {
+			// Break the loop if a different code value is encountered after adding to the array
+			addingToArray = false;
+			break;
+		}
+	}
+
+	return colorContrastInstances;
+}
+
 /**
  *  Get array of promises that run accessibility tests using pa11y
  *
@@ -47,13 +75,12 @@ function getTestPromises( tests, config ) {
  * @param {Object[]} testResult
  */
 async function processTestResult( testResult, config, opts ) {
-	const colorContrastErrList = testResult.issues.filter( ( issue ) => issue.code === 'color-contrast' );
+	const colorContrastErrList = extractColorContrastInstances( testResult );
 	const colorContrastErrorNum = colorContrastErrList.length;
-
 	const name = testResult.name;
 
 	// Log color contrast errors summary to console.
-	if ( !opts.silent && colorContrastErrList.length > 0 ) {
+	if ( !opts.silent && colorContrastErrorNum > 0 ) {
 		console.log( `'${name}' - ${colorContrastErrorNum} color contrast violations` );
 		const simplifiedList = colorContrastErrList.map( ( { selector, context } ) => ( { selector, context } ) );
 
