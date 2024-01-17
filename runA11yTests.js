@@ -8,9 +8,6 @@ const util = require( 'util' );
 const htmlReporter = require( path.resolve( __dirname, './reporter/reporter.js' ) );
 const reportTemplate = fs.readFileSync( path.resolve( __dirname, './reporter/report.mustache' ), 'utf8' );
 
-const htmlReporter = require( path.resolve( __dirname, './reporter/reporter.js' ) );
-const reportTemplate = fs.readFileSync( path.resolve( __dirname, './reporter/report.mustache' ), 'utf8' );
-
 const writeFileAsync = util.promisify( fs.writeFile );
 /**
  *  Delete and recreate the report directory
