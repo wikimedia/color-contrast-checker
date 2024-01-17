@@ -130,6 +130,9 @@ async function runTests( opts ) {
 		await fs.promises.writeFile( `${reportDir}/report.html`, html, 'utf8' );
 	}
 
+	// Copy JS across
+	fs.copyFileSync( 'reporter/index.js', 'a11y/index.js' );
+
 	// Save in html report
 	await generateHtmlReport( flattenedList, reportTemplate, config.reportDir );
 

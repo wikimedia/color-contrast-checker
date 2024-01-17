@@ -1,6 +1,14 @@
-const app = document.getElementById('report');
+/** Click handler for toggles */
+function toggleTable(name) {
+    const content = document.getElementById(name);
+    if (content.style.display === 'block') {
+        content.style.display = 'none';
+    } else {
+        content.style.display = 'block';
+    }
+}
 
-const tableNode = document.createElement('table');
+const app = document.getElementById('summary');
 
 const createParagraph = (text) => {
     const reportNode = document.createElement( 'p' );
@@ -13,8 +21,10 @@ const makeColumn = (text, tagName) => {
     return colNode;
 };
 const generalizeSelector = (text) => {
-    if ( text.indexOf( '#CITEREF' ) === 0 ) {
-        return '#CITEREF*';
+    if ( text.indexOf( '#cite_note' ) === 0 ) {
+        return '#cite_note* [[phab:TBC]]';
+    } else if ( text.indexOf( '#CITEREF' ) === 0 ) {
+        return '#CITEREF* [[phab:TBC]]';
     } else {
         return text;
     }
@@ -26,10 +36,8 @@ fetch('simplifiedList.csv').then((r) => r.text())
         const selectors = {};
         const titles = {};
         rows.forEach((row, i) => {
-            const rowNode = document.createElement('tr');
             const cols = row.split(',').map((col) => col.replace(/"/g, ''));
             cols.forEach(( text, j ) => {
-                rowNode.appendChild(makeColumn(text,i === 0 ? 'th' : 'td'));
                 if (i > 0) {
                     if ( j === 0 ) {
                         if ( !titles[text] ) {
@@ -45,11 +53,7 @@ fetch('simplifiedList.csv').then((r) => r.text())
                     }
                 }
             } );
-            tableNode.appendChild(rowNode);
         })
-        app.appendChild(
-            createParagraph( `${rows.length - 1} total errors across ${Object.keys(titles).length} pages.` )
-        );
         const selectorTableNode = document.createElement('table');
         const row = document.createElement('tr');
         row.appendChild(
@@ -61,14 +65,24 @@ fetch('simplifiedList.csv').then((r) => r.text())
         selectorTableNode.appendChild(row);
         Object.keys(selectors).forEach((selector) => {
             const row = document.createElement('tr');
+            const number = selectors[selector];
+            // ignore any errors that only impact one selector.
+            if ( number < 2 ) {
+                return;
+            }
             row.appendChild(
                 makeColumn( selector )
             );
             row.appendChild(
-                makeColumn( selectors[selector] )
+                makeColumn( number )
             );
             selectorTableNode.appendChild(row);
         })
+        app.appendChild(
+            createParagraph( `The following table groups known issues.` )
+        );
         app.appendChild(selectorTableNode);
-        app.appendChild(tableNode);
+        app.appendChild(
+            createParagraph( `The following lists articles on a per page basis for investigation.` )
+        );
     });
