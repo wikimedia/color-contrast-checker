@@ -8,6 +8,9 @@ const util = require( 'util' );
 const htmlReporter = require( path.resolve( __dirname, './reporter/reporter.js' ) );
 const reportTemplate = fs.readFileSync( path.resolve( __dirname, './reporter/report.mustache' ), 'utf8' );
 
+const htmlReporter = require( path.resolve( __dirname, './reporter/reporter.js' ) );
+const reportTemplate = fs.readFileSync( path.resolve( __dirname, './reporter/report.mustache' ), 'utf8' );
+
 const writeFileAsync = util.promisify( fs.writeFile );
 /**
  *  Delete and recreate the report directory
@@ -156,6 +159,9 @@ async function runTests( opts ) {
 		const html = await htmlReporter.results( flattenedList, reportTemplate );
 		await fs.promises.writeFile( `${reportDir}/report.html`, html, 'utf8' );
 	}
+
+	// Copy JS across
+	fs.copyFileSync( 'reporter/index.js', 'a11y/index.js' );
 
 	// Save in html report
 	await generateHtmlReport( flattenedList, reportTemplate, config.reportDir );

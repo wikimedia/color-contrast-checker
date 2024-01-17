@@ -31,6 +31,7 @@
 <body>
     <h1>Color Contrast Errors</h1>
     <p>Baseline: {{totalCount}}</p>
+    <div id="summary"></div>
     {{#groupedData}}
         <div class="collapsible" onclick="toggleTable('{{name}}')">
             <h2>{{name}} - Total: {{items.length}}</h2>
@@ -54,16 +55,6 @@
             </table>
         </div>
     {{/groupedData}}
-
-    <script>
-        function toggleTable(name) {
-            const content = document.getElementById(name);
-            if (content.style.display === 'block') {
-                content.style.display = 'none';
-            } else {
-                content.style.display = 'block';
-            }
-        }
-    </script>
+    <script src="./index.js"></script>
 </body>
 </html>
