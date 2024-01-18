@@ -57,7 +57,7 @@ async function getTestPromises( tests, config, browser ) {
 	process.setMaxListeners( 10 );
 
 	// Limit to 100 tests. Any more and pixel.wmcloud freezes up.
-	return tests.slice(0, 30).map( async ( test ) => {
+	return tests.slice(0, 50).map( async ( test ) => {
 		const { url, name, ...testOptions } = test;
 		const page = await browser.newPage();
 		const testConfig = { ...options, ...testOptions, browser, page };
