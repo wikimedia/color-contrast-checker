@@ -97,6 +97,10 @@ async function getTestPromises( tests, config, browser ) {
 					});
 					try {
 						let node = $( selector.join( ' > ' ) )[ 0 ];
+						if ( !node ) {
+							// If we can't find the node, no point in putting it in the results
+							return '';
+						}
 						let j = selector.length - 1;
 						while ( node && node.id !== 'mw-content-text' ) {
 							const newSelector = ( node.getAttribute( 'class' ) || '' ).split( ' ' ).join( '.' );
@@ -120,7 +124,7 @@ async function getTestPromises( tests, config, browser ) {
 				}, issue );
 				issues[i].selector = newSelector;
 			}
-			testResult.issues = issues;
+			testResult.issues = issues.filter((issue) => issue.selector);
 			return testResult;
 		} );
 	} );
@@ -231,7 +235,7 @@ async function runTests( opts ) {
  */
 async function writeSimplifiedListToCSV( simplifiedList, reportDir, fileName ) {
 	const csvContent = simplifiedList
-		.map( ( { name, selector, context } ) => `"${name}","${selector}","${context}"` )
+		.map( ( { name, selector, context } ) => `"${name}"😱"${selector}"😱"${context}"` )
 		.join( '\n' );
 
 	// Use path.join to concatenate directory paths
