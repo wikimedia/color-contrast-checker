@@ -72,6 +72,33 @@ function getTestPromises( tests, config ) {
 	} );
 }
 
+function injectClass( str, classSelector ) {
+	if ( str.indexOf( ':' ) > -1 ) {
+		const tmp = str.split( ':' );
+		return `${tmp[0]}${classSelector}:${tmp[1]}`;
+	} else {
+		return `${str}${classSelector}`;
+	}
+}
+
+function decorateSelector( selectorString ) {
+	const selector = selectorString.split( ' > ' );
+
+	let node = document.querySelector( selector.join( ' > ' ) );
+	if ( node ) {
+		let i = selector.length - 1;
+		while ( i > 0 ) {
+			const newSelector = ( node.getAttribute( 'class' ) || '' ).split( ' ' ).join( '.' );
+			if ( newSelector ) {
+				selector[i] = injectClass( selector[i], `.${newSelector}` );
+			}
+			i--;
+			node = node.parentNode;
+		}
+	}
+	return selector.join( ' > ' );
+}
+
 /**
  *  Process test results, log the results to console and a CSV.
  *
@@ -85,9 +112,12 @@ async function processTestResult( testResult, config, opts ) {
 	// Log color contrast errors summary to console.
 	if ( !opts.silent && colorContrastErrorNum > 0 ) {
 		console.log( `'${name}' - ${colorContrastErrorNum} color contrast violations` );
-		const simplifiedList = colorContrastErrList.map( ( { selector, context } ) => ( { selector, context } ) );
+		const simplifiedList = colorContrastErrList.map( ( { selector, context } ) => {
+			const modifiedSelector = decorateSelector( selector );
+			return { selector: modifiedSelector, context };
+		} );
 
-		return { simplifiedList, colorContrastErrorNum }; // Return both the simplifiedList and colorContrastErrorNum
+		return { simplifiedList, colorContrastErrorNum }; // Return both the modified list and error count
 	}
 
 	console.log( `'${name}' - ${colorContrastErrorNum} color contrast violations` );
