@@ -26,21 +26,14 @@ function resetReportDir( config ) {
 // Switch to axe-core for better accuracy.
 function extractColorContrastInstances( data ) {
 	const colorContrastInstances = [];
-	let addingToArray = false;
 
 	for ( let i = 0; i < data.issues.length; i++ ) {
 		const issue = data.issues[i];
 
 		if ( issue.code === 'color-contrast' ) {
-			if ( !addingToArray ) {
-				// Start adding to the array
-				addingToArray = true;
-			}
-			// Add the current issue to the array
 			colorContrastInstances.push( issue );
-		} else if ( addingToArray && i > 0 && data.issues[i].code !== 'color-contrast' && data.issues[i - 1].code === 'color-contrast' ) {
+		} else if ( colorContrastInstances.length > 0 ) {
 			// Break the loop if a different code value is encountered after adding to the array
-			addingToArray = false;
 			break;
 		}
 	}
