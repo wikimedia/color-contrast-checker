@@ -47,9 +47,10 @@ function extractColorContrastInstances( data ) {
  *
  * @param {Object[]} tests
  * @param {Object} config
+ * @param {puppeteer.Browser} browser
  * @return {Promise<any>[]}
  */
-function getTestPromises( tests, config ) {
+async function getTestPromises( tests, config, browser ) {
 	const options = config.defaults; // Common options for all tests
 
 	// Use a single listener for all tests
@@ -57,14 +58,14 @@ function getTestPromises( tests, config ) {
 
 	return tests.map( async ( test ) => {
 		const { url, name, ...testOptions } = test;
-		const browser = await puppeteer.launch();
 		const page = await browser.newPage();
 		const testConfig = { ...options, ...testOptions, browser, page };
 
 		return pa11y( url, testConfig ).then( async ( testResult ) => {
 			testResult.name = name;
-			const issues = testResult.issues;
-			await testResult.issues.forEach( async ( issue, i ) => {
+			const issues = testResult.issues || [];
+			for( let i = 0; i < issues.length; i++ ) {
+				const issue = issues[i];
 				const newSelector = await page.evaluate( async ( issue ) => {
 					const injectClass = ( str, classSelector, hasStyle ) => {
 						const styleSuffix = hasStyle ? '[style]' : '';
@@ -75,29 +76,28 @@ function getTestPromises( tests, config ) {
 							return `${str}${classSelector}${styleSuffix}`;
 						}
 					};
-
 					const selectorString = issue.selector;
 					const selector = selectorString.split( ' > ' );
 					try {
 						let node = document.querySelector( selector.join( ' > ' ) );
-						let i = selector.length - 1;
-						while ( i > 0 ) {
+						let j = selector.length - 1;
+						while ( node && j > 0 ) {
 							const newSelector = ( node.getAttribute( 'class' ) || '' ).split( ' ' ).join( '.' );
 							const hasStyle = node.hasAttribute( 'style' );
 				            const hasColorStyle = hasStyle && node.getAttribute( 'style' ).match(/(color|background|border)/g);
 							if ( newSelector ) {
-								selector[i] = injectClass( selector[i], `.${newSelector}`, !!hasColorStyle );
+								selector[j] = injectClass( selector[j], `.${newSelector}`, !!hasColorStyle );
 							}
-							i--;
+							j--;
 							node = node.parentNode;
 						}
 					} catch ( e ) {
-						return;
+						// continue..
 					}
 					return selector.join( ' > ' );
 				}, issue );
 				issues[i].selector = newSelector;
-			} );
+			}
 			testResult.issues = issues;
 			return testResult;
 		} );
@@ -158,9 +158,10 @@ async function runTests( opts ) {
 	}
 
 	resetReportDir( config );
-
-	const testPromises = getTestPromises( tests, config );
+	const browser = await puppeteer.launch();
+	const testPromises = await getTestPromises( tests, config, browser );
 	const results = await Promise.all( testPromises );
+	await browser.close();
 	let totalErrors = 0; // Variable to keep track of total errors
 
 	// Accumulate all simplifiedLists
