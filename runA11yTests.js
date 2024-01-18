@@ -69,17 +69,38 @@ async function getTestPromises( tests, config, browser ) {
 				const newSelector = await page.evaluate( async ( issue ) => {
 					const injectClass = ( str, classSelector, hasStyle ) => {
 						const styleSuffix = hasStyle ? '[style]' : '';
-						if ( str.indexOf( ':' ) > -1 ) {
+						let prefix = '';
+						let suffix = '';
+						if ( str.indexOf( ']' ) > -1 ) {
+							const tmp = str.split( ']' );
+							prefix = `${tmp[0]}]`;
+							suffix = tmp[1];
+						} else if ( str.indexOf( ':' ) > -1 ) {
 							const tmp = str.split( ':' );
-							return `${tmp[0]}${classSelector}:${tmp[1]}${styleSuffix}`;
+							prefix = tmp[0];
+							suffix = `:${tmp[1]}`;
 						} else {
-							return `${str}${classSelector}${styleSuffix}`;
+							prefix = str;
 						}
+						return `${prefix}${classSelector}${suffix}${styleSuffix}`;
 					};
 					const selectorString = issue.selector;
-					const selector = selectorString.split( ' > ' );
+					const selector = selectorString.split( ' > ' ).map( ( selector ) => {
+						selector = selector.trim();
+						if ( selector.indexOf('#') === 0 ) {
+							// rewrite as [id=""] - these are more compatible with non-standard IDs we
+							// find in Wikipedia articles.
+							return `[id='${selector.slice(1)}']`;
+						} else {
+							return selector;
+						}
+					});
 					try {
 						let node = $( selector.join( ' > ' ) )[ 0 ];
+						if ( !node ) {
+							// If we can't find the node, no point in putting it in the results
+							return '';
+						}
 						let j = selector.length - 1;
 						while ( node && node.id !== 'mw-content-text' ) {
 							const newSelector = ( node.getAttribute( 'class' ) || '' ).split( ' ' ).join( '.' );
@@ -103,7 +124,7 @@ async function getTestPromises( tests, config, browser ) {
 				}, issue );
 				issues[i].selector = newSelector;
 			}
-			testResult.issues = issues;
+			testResult.issues = issues.filter((issue) => issue.selector);
 			return testResult;
 		} );
 	} );
@@ -214,7 +235,7 @@ async function runTests( opts ) {
  */
 async function writeSimplifiedListToCSV( simplifiedList, reportDir, fileName ) {
 	const csvContent = simplifiedList
-		.map( ( { name, selector, context } ) => `"${name}","${selector}","${context}"` )
+		.map( ( { name, selector, context } ) => `"${name}"😱"${selector}"😱"${context}"` )
 		.join( '\n' );
 
 	// Use path.join to concatenate directory paths
