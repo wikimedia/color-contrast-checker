@@ -34,7 +34,7 @@
     <div id="summary"></div>
     {{#groupedData}}
         <div class="collapsible" onclick="toggleTable('{{name}}')">
-            <h2>{{name}} - Total: {{items.length}}</h2>
+            <h2><a href="{{pageUrl}}">{{name}}</a> - Total: {{items.length}}</h2>
         </div>
         <div class="content" id="{{name}}">
             <table>

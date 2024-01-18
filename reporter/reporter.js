@@ -33,18 +33,19 @@ function groupDataByName( dataArray ) {
     const groupedData = {};
 
     dataArray.forEach( ( item ) => {
-        if ( !groupedData[item.name] ) {
-            groupedData[item.name] = [];
+        if ( !groupedData[item.pageUrl] ) {
+            groupedData[item.pageUrl] = {
+                pageUrl: item.pageUrl,
+                name: item.name,
+                items: []
+            }
         }
 
-        groupedData[item.name].push( {
+        groupedData[item.pageUrl].items.push( {
             selector: item.selector,
             context: item.context,
         } );
     } );
 
-    return Object.entries( groupedData ).map( ( [name, items] ) => ( {
-        name,
-        items,
-    } ) );
+    return Object.entries( groupedData ).map( ( [_name, data] ) => ( data ) );
 }
