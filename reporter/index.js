@@ -20,11 +20,34 @@ const makeColumn = (text, tagName) => {
     colNode.textContent = text;
     return colNode;
 };
+
 const generalizeSelector = (text) => {
-    if ( text.indexOf( '#cite_note' ) === 0 ) {
+    if ( text.match( /a\.external/ ) ) {
+        return 'a.external [[phab:TBC]]';
+    } else if ( text.match( /\.wikitable.sortable/ ) ) {
+        return 'Sortable wikitable [[phab:TBC]]';
+    } else if ( text.match( /\.(bandeau-container)/ ) ) {
+        return 'bandeau-container template [[phab:TBC]]';
+    } else if ( text.match( /\.(autres-projets)/ ) ) {
+        return 'Other projects template [[phab:TBC]]';
+    } else if ( text.match( /\#(mp-)/ ) ) {
+        return 'main page template issue [phab:TBC]';
+    } else if ( text.match( /\.(infobox|infobox_v2)/ ) ) {
+        return 'infobox related issue [phab:TBC]';
+    } else if ( text.match( /\.(navbox-abovebelow|navbox-title)/ ) ) {
+        return 'navbox related issue [phab:TBC]';
+    } else if ( text.match( /table[^\ ]*\[style\]/ ) ) {
+        return 'Table with style attribute [[phab:TBC]]';
+    } else if ( text.indexOf( '#cite_note' ) > -1 ) {
         return '#cite_note* [[phab:TBC]]';
-    } else if ( text.indexOf( '#CITEREF' ) === 0 ) {
+    } else if ( text.indexOf( '#CITEREF' ) > -1 ) {
         return '#CITEREF* [[phab:TBC]]';
+    } else if ( text.match( /\.colonnes\.liste-simple:/ ) ) {
+        return '.colonnes.liste-simple [[phab:TBC]]';
+    } else if ( text.match( /\[style\]/ ) ) {
+        return 'Undiagnosed style issue [[phab:TBC]]';
+    } else if ( text.match( /table[: ]/ ) ) {
+        return 'Undiagnosed table issue [[phab:TBC]]';
     } else {
         return text;
     }
@@ -66,10 +89,6 @@ fetch('simplifiedList.csv').then((r) => r.text())
         Object.keys(selectors).forEach((selector) => {
             const row = document.createElement('tr');
             const number = selectors[selector];
-            // ignore any errors that only impact one selector.
-            if ( number < 2 ) {
-                return;
-            }
             row.appendChild(
                 makeColumn( selector )
             );

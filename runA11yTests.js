@@ -4,6 +4,7 @@ const path = require( 'path' );
 const pa11y = require( 'pa11y' );
 const { program } = require( 'commander' );
 const util = require( 'util' );
+const puppeteer = require('puppeteer');
 
 const htmlReporter = require( path.resolve( __dirname, './reporter/reporter.js' ) );
 const reportTemplate = fs.readFileSync( path.resolve( __dirname, './reporter/report.mustache' ), 'utf8' );
@@ -20,25 +21,89 @@ function resetReportDir( config ) {
 	fs.mkdirSync( config.reportDir, { recursive: true } );
 }
 
+// FIXME: Temporary pa11y workaround for color
+// contrast errors in two groups – first valid, second
+// invalid. Not suitable for production.
+// Switch to axe-core for better accuracy.
+function extractColorContrastInstances( data ) {
+	const colorContrastInstances = [];
+
+	for ( let i = 0; i < data.issues.length; i++ ) {
+		const issue = data.issues[i];
+
+		if ( issue.code === 'color-contrast' ) {
+			colorContrastInstances.push( issue );
+		} else if ( colorContrastInstances.length > 0 ) {
+			// Break the loop if a different code value is encountered after adding to the array
+			break;
+		}
+	}
+
+	return colorContrastInstances;
+}
+
 /**
  *  Get array of promises that run accessibility tests using pa11y
  *
  * @param {Object[]} tests
  * @param {Object} config
+ * @param {puppeteer.Browser} browser
  * @return {Promise<any>[]}
  */
-function getTestPromises( tests, config ) {
+async function getTestPromises( tests, config, browser ) {
 	const options = config.defaults; // Common options for all tests
 
 	// Use a single listener for all tests
 	process.setMaxListeners( 100 );
 
-	return tests.map( ( test ) => {
+	return tests.map( async ( test ) => {
 		const { url, name, ...testOptions } = test;
-		const testConfig = { ...options, ...testOptions };
+		const page = await browser.newPage();
+		const testConfig = { ...options, ...testOptions, browser, page };
 
-		return pa11y( url, testConfig ).then( ( testResult ) => {
+		return pa11y( url, testConfig ).then( async ( testResult ) => {
 			testResult.name = name;
+			const issues = testResult.issues || [];
+			for( let i = 0; i < issues.length; i++ ) {
+				const issue = issues[i];
+				const newSelector = await page.evaluate( async ( issue ) => {
+					const injectClass = ( str, classSelector, hasStyle ) => {
+						const styleSuffix = hasStyle ? '[style]' : '';
+						if ( str.indexOf( ':' ) > -1 ) {
+							const tmp = str.split( ':' );
+							return `${tmp[0]}${classSelector}:${tmp[1]}${styleSuffix}`;
+						} else {
+							return `${str}${classSelector}${styleSuffix}`;
+						}
+					};
+					const selectorString = issue.selector;
+					const selector = selectorString.split( ' > ' );
+					try {
+						let node = $( selector.join( ' > ' ) )[ 0 ];
+						let j = selector.length - 1;
+						while ( node && node.id !== 'mw-content-text' ) {
+							const newSelector = ( node.getAttribute( 'class' ) || '' ).split( ' ' ).join( '.' );
+							const hasStyle = node.hasAttribute( 'style' );
+							const hasColorStyle = hasStyle && node.getAttribute( 'style' ).match(/(color|background|border)/g);
+							if ( newSelector && j > -1 ) {
+								selector[j] = injectClass( selector[j], `.${newSelector}`, !!hasColorStyle );
+							}
+							if ( j < 0 ) {
+								selector.unshift(
+									injectClass( node.tagName.toLowerCase(), newSelector ? `.${newSelector}` : '', !!hasColorStyle )
+								);
+							}
+							j--;
+							node = node.parentNode;
+						}
+					} catch ( e ) {
+						// continue..
+					}
+					return selector.join( ' > ' );
+				}, issue );
+				issues[i].selector = newSelector;
+			}
+			testResult.issues = issues;
 			return testResult;
 		} );
 	} );
@@ -50,17 +115,17 @@ function getTestPromises( tests, config ) {
  * @param {Object[]} testResult
  */
 async function processTestResult( testResult, config, opts ) {
-	const colorContrastErrList = testResult.issues.filter( ( issue ) => issue.code === 'color-contrast' );
+	const colorContrastErrList = extractColorContrastInstances( testResult );
 	const colorContrastErrorNum = colorContrastErrList.length;
-
 	const name = testResult.name;
 
 	// Log color contrast errors summary to console.
-	if ( !opts.silent && colorContrastErrList.length > 0 ) {
+	if ( !opts.silent && colorContrastErrorNum > 0 ) {
 		console.log( `'${name}' - ${colorContrastErrorNum} color contrast violations` );
-		const simplifiedList = colorContrastErrList.map( ( { selector, context } ) => ( { selector, context } ) );
-
-		return { simplifiedList, colorContrastErrorNum }; // Return both the simplifiedList and colorContrastErrorNum
+		const simplifiedList = colorContrastErrList.map( ( { selector, context } ) => {
+			return { selector, context };
+		} );
+		return { simplifiedList, colorContrastErrorNum }; // Return both the modified list and error count
 	}
 
 	console.log( `'${name}' - ${colorContrastErrorNum} color contrast violations` );
@@ -98,9 +163,10 @@ async function runTests( opts ) {
 	}
 
 	resetReportDir( config );
-
-	const testPromises = getTestPromises( tests, config );
+	const browser = await puppeteer.launch();
+	const testPromises = await getTestPromises( tests, config, browser );
 	const results = await Promise.all( testPromises );
+	await browser.close();
 	let totalErrors = 0; // Variable to keep track of total errors
 
 	// Accumulate all simplifiedLists
