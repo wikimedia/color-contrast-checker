@@ -105,7 +105,7 @@ fetch('simplifiedList.csv').then((r) => r.text())
             makeColumn('total', 'th' )
         );
         selectorTableNode.appendChild(row);
-        Object.keys(selectors).forEach((selector) => {
+        Object.keys(selectors).sort((a, b) => selectors[a] < selectors[b] ? 1 : -1).forEach((selector) => {
             const row = document.createElement('tr');
             const number = selectors[selector];
             row.appendChild(
