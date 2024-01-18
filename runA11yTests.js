@@ -4,6 +4,7 @@ const path = require( 'path' );
 const pa11y = require( 'pa11y' );
 const { program } = require( 'commander' );
 const util = require( 'util' );
+const puppeteer = require('puppeteer');
 
 const htmlReporter = require( path.resolve( __dirname, './reporter/reporter.js' ) );
 const reportTemplate = fs.readFileSync( path.resolve( __dirname, './reporter/report.mustache' ), 'utf8' );
@@ -54,42 +55,50 @@ function getTestPromises( tests, config ) {
 	// Use a single listener for all tests
 	process.setMaxListeners( 100 );
 
-	return tests.map( ( test ) => {
+	return tests.map( async ( test ) => {
 		const { url, name, ...testOptions } = test;
-		const testConfig = { ...options, ...testOptions };
+		const browser = await puppeteer.launch();
+		const page = await browser.newPage();
+		const testConfig = { ...options, ...testOptions, browser, page };
 
-		return pa11y( url, testConfig ).then( ( testResult ) => {
+		return pa11y( url, testConfig ).then( async ( testResult ) => {
 			testResult.name = name;
+			const issues = testResult.issues;
+			await testResult.issues.forEach( async ( issue, i ) => {
+				const newSelector = await page.evaluate( async ( issue ) => {
+					const injectClass = ( str, classSelector ) => {
+						if ( str.indexOf( ':' ) > -1 ) {
+							const tmp = str.split( ':' );
+							return `${tmp[0]}${classSelector}:${tmp[1]}`;
+						} else {
+							return `${str}${classSelector}`;
+						}
+					};
+
+					const selectorString = issue.selector;
+					const selector = selectorString.split( ' > ' );
+					try {
+						let node = document.querySelector( selector.join( ' > ' ) );
+						let i = selector.length - 1;
+						while ( i > 0 ) {
+							const newSelector = ( node.getAttribute( 'class' ) || '' ).split( ' ' ).join( '.' );
+							if ( newSelector ) {
+								selector[i] = injectClass( selector[i], `.${newSelector}` );
+							}
+							i--;
+							node = node.parentNode;
+						}
+					} catch ( e ) {
+						return;
+					}
+					return selector.join( ' > ' );
+				}, issue );
+				issues[i].selector = newSelector;
+			} );
+			testResult.issues = issues;
 			return testResult;
 		} );
 	} );
-}
-
-function injectClass( str, classSelector ) {
-	if ( str.indexOf( ':' ) > -1 ) {
-		const tmp = str.split( ':' );
-		return `${tmp[0]}${classSelector}:${tmp[1]}`;
-	} else {
-		return `${str}${classSelector}`;
-	}
-}
-
-function decorateSelector( selectorString ) {
-	const selector = selectorString.split( ' > ' );
-
-	let node = document.querySelector( selector.join( ' > ' ) );
-	if ( node ) {
-		let i = selector.length - 1;
-		while ( i > 0 ) {
-			const newSelector = ( node.getAttribute( 'class' ) || '' ).split( ' ' ).join( '.' );
-			if ( newSelector ) {
-				selector[i] = injectClass( selector[i], `.${newSelector}` );
-			}
-			i--;
-			node = node.parentNode;
-		}
-	}
-	return selector.join( ' > ' );
 }
 
 /**
@@ -106,10 +115,8 @@ async function processTestResult( testResult, config, opts ) {
 	if ( !opts.silent && colorContrastErrorNum > 0 ) {
 		console.log( `'${name}' - ${colorContrastErrorNum} color contrast violations` );
 		const simplifiedList = colorContrastErrList.map( ( { selector, context } ) => {
-			const modifiedSelector = decorateSelector( selector );
-			return { selector: modifiedSelector, context };
+			return { selector, context };
 		} );
-
 		return { simplifiedList, colorContrastErrorNum }; // Return both the modified list and error count
 	}
 
