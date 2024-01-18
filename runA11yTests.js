@@ -66,12 +66,13 @@ function getTestPromises( tests, config ) {
 			const issues = testResult.issues;
 			await testResult.issues.forEach( async ( issue, i ) => {
 				const newSelector = await page.evaluate( async ( issue ) => {
-					const injectClass = ( str, classSelector ) => {
+					const injectClass = ( str, classSelector, hasStyle ) => {
+						const styleSuffix = hasStyle ? '[style]' : '';
 						if ( str.indexOf( ':' ) > -1 ) {
 							const tmp = str.split( ':' );
-							return `${tmp[0]}${classSelector}:${tmp[1]}`;
+							return `${tmp[0]}${classSelector}:${tmp[1]}${styleSuffix}`;
 						} else {
-							return `${str}${classSelector}`;
+							return `${str}${classSelector}${styleSuffix}`;
 						}
 					};
 
@@ -82,8 +83,10 @@ function getTestPromises( tests, config ) {
 						let i = selector.length - 1;
 						while ( i > 0 ) {
 							const newSelector = ( node.getAttribute( 'class' ) || '' ).split( ' ' ).join( '.' );
+							const hasStyle = node.hasAttribute( 'style' );
+				            const hasColorStyle = hasStyle && node.getAttribute( 'style' ).match(/(color|background|border)/g);
 							if ( newSelector ) {
-								selector[i] = injectClass( selector[i], `.${newSelector}` );
+								selector[i] = injectClass( selector[i], `.${newSelector}`, !!hasColorStyle );
 							}
 							i--;
 							node = node.parentNode;
