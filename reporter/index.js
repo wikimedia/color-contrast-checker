@@ -30,7 +30,11 @@ const generalizeSelector = (text) => {
         return 'bandeau-container template [[phab:TBC]]';
     } else if ( text.match( /\.(autres-projets)/ ) ) {
         return 'Other projects template [[phab:TBC]]';
-    } else if ( text.match( /\.navbox-abovebelow/ ) ) {
+    } else if ( text.match( /\#(mp-)/ ) ) {
+        return 'main page template issue [phab:TBC]';
+    } else if ( text.match( /\.(infobox|infobox_v2)/ ) ) {
+        return 'infobox related issue [phab:TBC]';
+    } else if ( text.match( /\.(navbox-abovebelow|navbox-title)/ ) ) {
         return 'navbox related issue [phab:TBC]';
     } else if ( text.match( /table[^\ ]*\[style\]/ ) ) {
         return 'Table with style attribute [[phab:TBC]]';
