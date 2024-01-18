@@ -184,7 +184,10 @@ async function runTests( opts ) {
 	}
 
 	resetReportDir( config );
-	const browser = await puppeteer.launch();
+	const browser = await puppeteer.launch( {
+		// needed for running on pixel.wmcloud.org
+		args: ['--no-sandbox']
+	} );
 	const testPromises = await getTestPromises( tests, config, browser );
 	const results = await Promise.all( testPromises );
 	await browser.close();
