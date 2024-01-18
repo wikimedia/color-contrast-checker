@@ -123,7 +123,7 @@ async function processTestResult( testResult, config, opts ) {
 	if ( !opts.silent && colorContrastErrorNum > 0 ) {
 		console.log( `'${name}' - ${colorContrastErrorNum} color contrast violations` );
 		const simplifiedList = colorContrastErrList.map( ( { selector, context } ) => {
-			return { selector, context };
+			return { selector, context, pageUrl: testResult.pageUrl };
 		} );
 		return { simplifiedList, colorContrastErrorNum }; // Return both the modified list and error count
 	}
@@ -187,7 +187,8 @@ async function runTests( opts ) {
 
 	// Write all simplifiedLists to a CSV file
 	const flattenedList = allSimplifiedLists.flatMap( ( item ) =>
-		item.simplifiedList.map( ( { selector, context } ) => ( { name: item.name, selector, context } ) )
+		item.simplifiedList.map( ( { selector, context, pageUrl } ) => ( {
+			name: item.name, selector, context, pageUrl  } ) )
 	);
 
 	// Generate HTML report
