@@ -24,7 +24,7 @@ const oneDayAgo = new Date( currentDate );
 oneDayAgo.setDate( oneDayAgo.getDate() - 1 );
 
 // Retrieve the top Wikipedia articles using the Wikimedia API.
-async function getTopWikipediaArticles( project, limit = 3 ) {
+async function getTopWikipediaArticles( project, limit = 50 ) {
 	const endpoint = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${project}/all-access/${getFormattedDate( oneDayAgo )}`;
 
 	try {
