@@ -79,14 +79,19 @@ async function getTestPromises( tests, config, browser ) {
 					const selectorString = issue.selector;
 					const selector = selectorString.split( ' > ' );
 					try {
-						let node = document.querySelector( selector.join( ' > ' ) );
+						let node = $( selector.join( ' > ' ) )[ 0 ];
 						let j = selector.length - 1;
-						while ( node && j > 0 ) {
+						while ( node && node.id !== 'mw-content-text' ) {
 							const newSelector = ( node.getAttribute( 'class' ) || '' ).split( ' ' ).join( '.' );
 							const hasStyle = node.hasAttribute( 'style' );
-				            const hasColorStyle = hasStyle && node.getAttribute( 'style' ).match(/(color|background|border)/g);
-							if ( newSelector ) {
+							const hasColorStyle = hasStyle && node.getAttribute( 'style' ).match(/(color|background|border)/g);
+							if ( newSelector && j > -1 ) {
 								selector[j] = injectClass( selector[j], `.${newSelector}`, !!hasColorStyle );
+							}
+							if ( j < 0 ) {
+								selector.unshift(
+									injectClass( node.tagName.toLowerCase(), newSelector ? `.${newSelector}` : '', !!hasColorStyle )
+								);
 							}
 							j--;
 							node = node.parentNode;
