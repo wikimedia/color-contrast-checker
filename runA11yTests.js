@@ -69,15 +69,32 @@ async function getTestPromises( tests, config, browser ) {
 				const newSelector = await page.evaluate( async ( issue ) => {
 					const injectClass = ( str, classSelector, hasStyle ) => {
 						const styleSuffix = hasStyle ? '[style]' : '';
-						if ( str.indexOf( ':' ) > -1 ) {
+						let prefix = '';
+						let suffix = '';
+						if ( str.indexOf( ']' ) > -1 ) {
+							const tmp = str.split( ']' );
+							prefix = `${tmp[0]}]`;
+							suffix = tmp[1];
+						} else if ( str.indexOf( ':' ) > -1 ) {
 							const tmp = str.split( ':' );
-							return `${tmp[0]}${classSelector}:${tmp[1]}${styleSuffix}`;
+							prefix = tmp[0];
+							suffix = `:${tmp[1]}`;
 						} else {
-							return `${str}${classSelector}${styleSuffix}`;
+							prefix = str;
 						}
+						return `${prefix}${classSelector}${suffix}${styleSuffix}`;
 					};
 					const selectorString = issue.selector;
-					const selector = selectorString.split( ' > ' );
+					const selector = selectorString.split( ' > ' ).map( ( selector ) => {
+						selector = selector.trim();
+						if ( selector.indexOf('#') === 0 ) {
+							// rewrite as [id=""] - these are more compatible with non-standard IDs we
+							// find in Wikipedia articles.
+							return `[id='${selector.slice(1)}']`;
+						} else {
+							return selector;
+						}
+					});
 					try {
 						let node = $( selector.join( ' > ' ) )[ 0 ];
 						let j = selector.length - 1;
