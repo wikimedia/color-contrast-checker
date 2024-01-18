@@ -193,7 +193,7 @@ async function runTests( opts ) {
 	// Generate HTML report
 	async function generateHtmlReport( flattenedList, reportTemplate, reportDir ) {
 		const html = await htmlReporter.results( flattenedList, reportTemplate );
-		await fs.promises.writeFile( `${reportDir}/report.html`, html, 'utf8' );
+		await fs.promises.writeFile( `${reportDir}/index.html`, html, 'utf8' );
 	}
 
 	// Copy JS across
