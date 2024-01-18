@@ -54,9 +54,10 @@ async function getTestPromises( tests, config, browser ) {
 	const options = config.defaults; // Common options for all tests
 
 	// Use a single listener for all tests
-	process.setMaxListeners( 100 );
+	process.setMaxListeners( 10 );
 
-	return tests.map( async ( test ) => {
+	// Limit to 100 tests. Any more and pixel.wmcloud freezes up.
+	return tests.slice(0, 30).map( async ( test ) => {
 		const { url, name, ...testOptions } = test;
 		const page = await browser.newPage();
 		const testConfig = { ...options, ...testOptions, browser, page };
@@ -125,6 +126,7 @@ async function getTestPromises( tests, config, browser ) {
 				issues[i].selector = newSelector;
 			}
 			testResult.issues = issues.filter((issue) => issue.selector);
+			page.close();
 			return testResult;
 		} );
 	} );
@@ -184,7 +186,10 @@ async function runTests( opts ) {
 	}
 
 	resetReportDir( config );
-	const browser = await puppeteer.launch();
+	const browser = await puppeteer.launch( {
+		// needed for running on pixel.wmcloud.org
+		args: ['--no-sandbox']
+	} );
 	const testPromises = await getTestPromises( tests, config, browser );
 	const results = await Promise.all( testPromises );
 	await browser.close();

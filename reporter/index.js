@@ -29,9 +29,7 @@ const generalizeSelector = (text) => {
         return '';
     }
 
-    if ( text.match( /\.mw-references-wrap/ ) ) {
-        return 'mw-references-wrap [[phab:TBC]]';
-    } else if ( text.match( /\[style\].*\.reference > a/ ) ) {
+    if ( text.match( /\[style\].*\.reference > a/ ) ) {
         return 'Reference link inside element with [style] styling [[phab:TBC]]';
     } else if ( text.match( /\.alternance/ ) ) {
         return '.alternance [[phab:TBC]]';
@@ -48,9 +46,7 @@ const generalizeSelector = (text) => {
     } else if ( text.match( /\.(navbox-even|navbox-abovebelow|navbox-title)/ ) ) {
         return 'navbox related issue [phab:TBC]';
     } else if ( text.match( /table[^\ ]*\[style\]/ ) ) {
-        return 'Table with style attribute [[phab:TBC]]';
-    } else if ( text.match( /id='cite_note/ ) ) {
-        return '#cite_note* [[phab:TBC]]';
+        return 'Table with style attribute [[phab:TBC]]'
     } else if ( text.match( /[#=]CITEREF/ ) ) {
         return '#CITEREF* [[phab:TBC]]';
     } else if ( text.match( /sup.ext-phonos-attribution.noexcerpt.navigation-not-searchable > a/ ) ) {
@@ -62,7 +58,7 @@ const generalizeSelector = (text) => {
         return 'a.mw-redirect [[phab:TBC]]';
     } else if ( text.match( /(table|\.wikitable)/ ) ) {
         return 'Undiagnosed table issue table or .wikitable [[phab:TBC]]';
-    } else if ( text.match( /(noprint|\.external\.(text|free)|\.nowrap|span\.ouvrage > span\.italique)/ ) ) {
+    } else if ( text.match( /(noprint|\.external|cite\.citation|\.nowrap|span\.ouvrage > span\.italique|\.reference-accessdate|small\.cachelinks)/ ) ) {
         // these are false positives and do not impact dark mode.
         return '';
     } else {
