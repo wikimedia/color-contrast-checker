@@ -35,6 +35,12 @@ const generalizeSelector = (text) => {
         return '.alternance [[phab:TBC]]';
     } else if ( text.match( /table\.sidebar/ ) ) {
         return 'table.sidebar template [[phab:TBC]]';
+    // e.g. https://en.wikipedia.org/wiki/Portal%3ACurrent_events
+    } else if ( text.match( /\.(current-events-sidebar)/ ) ) {
+        return 'current-events-sidebar (portal pages) [[phab:TBC]]';
+    // e.g. https://en.wikipedia.org/wiki/Pakistan
+    } else if ( text.match( /\.(quotebox)/ ) ) {
+        return '.quotebox [[phab:TBC]]';
     } else if ( text.match( /\.(bandeau-container)/ ) ) {
         return '.bandeau-container [[phab:TBC]]';
     } else if ( text.match( /\.(autres-projets)/ ) ) {
