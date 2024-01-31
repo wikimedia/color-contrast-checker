@@ -7,7 +7,7 @@ function escapeHTML( text ) {
 	return text.replace( /</g, '&lt;' ).replace( />/g, '&gt;' );
 }
 
-function generateHTMLPage( simplifiedLists ) {
+function generateHTMLPage( simplifiedLists, noColorContrastViolationCount, colorContrastViolationCount, pagesScanned ) {
 	try {
 		// Read the template file.
 		const templatePath = path.join( __dirname, '../views/template.mustache' );
@@ -52,11 +52,18 @@ function generateHTMLPage( simplifiedLists ) {
 		// Calculate total number of items.
 		const totalItems = simplifiedLists.length;
 
+		const passingPages = noColorContrastViolationCount;
+
+		const failingPages = colorContrastViolationCount;
+
 		// Render the template with dynamic content
 		const htmlContent = mustache.render( template, {
-			pageTitle: "Color Contrast Errors",
+			pageTitle: "Wikipedia Color Contrast Errors",
+			pagesScanned: pagesScanned,
 			totalItems: totalItems,
-			tableSections: tableSections
+			tableSections: tableSections,
+			passingPages: passingPages,
+			failingPages: failingPages
 		} );
 
 		// Determine the output directory based on the location of the script.

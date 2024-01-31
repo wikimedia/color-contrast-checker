@@ -7,6 +7,18 @@
 	<title>{{pageTitle}}</title>
 	<style>
 		/* Add any CSS styling here */
+		html {
+			height: 100%;
+			background-image: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12);
+			font-family: sans-serif;
+		}
+
+		body {
+			margin: 10rem 5rem;
+			padding: 2rem 3rem;
+			background: #fffffff5;
+		}
+
 		table {
 			display: none;
 			width: 100%;
@@ -29,6 +41,9 @@
 <body>
 	<h1>{{pageTitle}}</h1>
 	<p>Baseline: {{totalItems}}</p>
+	<p>Scanned {{pagesScanned}} pages.</p>
+	<p>{{passingPages}} pages without color contrast violations.</p>
+	<p>{{failingPages}} pages with color contrast violations.</p>
 	{{{tableSections}}} <!-- Use triple mustache for raw HTML content -->
  <script src="../scripts/collapsible.js"></script>
 </body>
