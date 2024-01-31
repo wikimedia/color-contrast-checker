@@ -1,18 +1,19 @@
-document.addEventListener( "DOMContentLoaded", function () {
-    var collapsibleH2s = document.querySelectorAll( "h2.collapsible" );
-    collapsibleH2s.forEach( function ( h2 ) {
-        var table = h2.nextElementSibling; // Assuming table follows h2
+const puppeteer = require( 'puppeteer' );
+const fs = require( 'fs' );
+const path = require( 'path' );
+const { runAccessibilityChecksForURLs } = require( './modules/accessibility.test.js' );
 
-        // Initially hide the table
-        table.style.display = "none";
+// Main function to run the application
+async function main() {
+	try {
+		// Run accessibility checks and generate reports
+		await runAccessibilityChecksForURLs();
 
-        // Toggle visibility of table when h2 is clicked
-        h2.addEventListener( "click", function () {
-            if ( table.style.display === "none" ) {
-                table.style.display = "table";
-            } else {
-                table.style.display = "none";
-            }
-        } );
-    } );
-} );
+		console.log( 'Application ran successfully.' );
+	} catch ( error ) {
+		console.error( 'An error occurred:', error );
+	}
+}
+
+// Call the main function to start the application
+main();

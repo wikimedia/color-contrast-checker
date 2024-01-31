@@ -29,8 +29,7 @@ Color Contrast Tester
 * Run the tests using the following command:
 
 ```
-cd modules
-node accessibility.test.js
+node index.js
 ```
 
 ### Important Note

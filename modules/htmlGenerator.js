@@ -25,28 +25,28 @@ function generateHTMLPage( simplifiedLists ) {
 		// Generate separate tables for each pageURL.
 		const tableSections = Object.keys( groupedItems ).map( pageUrl => {
 			const items = groupedItems[pageUrl].map( item => `
-                <tr>
-                    <td>${item.selector}</td>
-                    <td>${escapeHTML( item.context )}</td>
-                </tr>
-            `).join( '' );
+				<tr>
+					<td>${item.selector}</td>
+					<td>${escapeHTML( item.context )}</td>
+				</tr>
+			`).join( '' );
 			const totalItemsForPageUrl = groupedItems[pageUrl].length;
 			const pageTitle = groupedItems[pageUrl][0].title; // Assuming title is present in all items
 
 			return `
-                <h2 class="collapsible"><a href="${pageUrl}">${pageTitle}</a> - Total Errors: ${totalItemsForPageUrl}</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Selector</th>
-                            <th>Context</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${items}
-                    </tbody>
-                </table>
-            `;
+				<h2 class="collapsible"><a href="${pageUrl}">${pageTitle}</a> - Total Errors: ${totalItemsForPageUrl}</h2>
+				<table>
+					<thead>
+						<tr>
+							<th>Selector</th>
+							<th>Context</th>
+						</tr>
+					</thead>
+					<tbody>
+						${items}
+					</tbody>
+				</table>
+			`;
 		} ).join( '' );
 
 		// Calculate total number of items.

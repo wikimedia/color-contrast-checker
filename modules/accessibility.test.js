@@ -102,4 +102,6 @@ async function runAccessibilityChecksForURLs() {
 }
 
 // Call the async function.
-runAccessibilityChecksForURLs();
+module.exports = {
+	runAccessibilityChecksForURLs
+};
