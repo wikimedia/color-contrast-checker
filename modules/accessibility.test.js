@@ -21,11 +21,7 @@ async function newPage( browser, url ) {
 }
 
 // Function to run accessibility check on a given URL
-async function runAccessibilityCheck( url ) {
-	const browser = await puppeteer.launch( {
-		args: ['--no-sandbox']
-	} );
-
+async function runAccessibilityCheck( browser, url ) {
 	try {
 		const page = await newPage( browser, url );
 		// Inject axe-core script into the page
@@ -69,9 +65,6 @@ async function runAccessibilityCheck( url ) {
 		return colorContrastViolation || null;
 	} catch ( e ) {
 		console.error( e );
-	} finally {
-		// Close the browser
-		await browser.close();
 	}
 }
 
@@ -82,12 +75,16 @@ async function runAccessibilityChecksForURLs() {
 		const testCases = await createTestCases();
 
 		// Run accessibility checks for each URL concurrently
-		const accessibilityChecks = testCases.map( testCase =>
-			runAccessibilityCheck( testCase.url )
+		const browser = await puppeteer.launch( {
+			args: ['--no-sandbox']
+		} );
+		const accessibilityChecks = testCases.map( async ( testCase ) =>
+			await runAccessibilityCheck( browser, testCase.url )
 		);
 
 		// Wait for all checks to complete
 		const results = await Promise.all( accessibilityChecks );
+		browser.close();
 
 		// Handle the results (each result corresponds to one URL)
 		const allSimplifiedLists = [];
