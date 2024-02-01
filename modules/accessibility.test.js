@@ -6,20 +6,28 @@ const { writeSimplifiedListToCSV } = require( './csvWriter' );
 const { generateHTMLPage } = require( './htmlGenerator' );
 const fs = require( 'fs' );
 const path = require( 'path' );
+const decorateSelector = require( './decorateSelector' );
 
 // Counters and variables
 let noColorContrastViolationCount = 0;
 let colorContrastViolationCount = 0;
 let pagesScanned = 0;
 
+
+async function newPage( browser, url ) {
+	const page = await browser.newPage();
+	await page.goto( url );
+	return page;
+}
+
 // Function to run accessibility check on a given URL
 async function runAccessibilityCheck( url ) {
-	const browser = await puppeteer.launch();
-	const page = await browser.newPage();
+	const browser = await puppeteer.launch( {
+		args: ['--no-sandbox']
+	} );
 
 	try {
-		await page.goto( url );
-
+		const page = await newPage( browser, url );
 		// Inject axe-core script into the page
 		await page.evaluate( axeCore.source );
 
@@ -38,11 +46,17 @@ async function runAccessibilityCheck( url ) {
 			console.error( 'Color contrast violation found' );
 			colorContrastViolationCount++;
 
+			const anotherPage = await newPage( browser, url );
 			// Array to store nodeDetails
-			const nodeDetailsArray = colorContrastViolation.nodes.map( node => ( {
-				context: node.html,
-				selector: node.target.join( ', ' ),
-			} ) );
+			const nodeDetailsArray = await Promise.all(
+				colorContrastViolation.nodes.map( async ( node ) => {
+					const selector = await decorateSelector( anotherPage, node.target.join( ', ' ) );
+					return {
+						context: node.html,
+						selector
+					};
+				} )
+			);
 
 			// Return the array of nodeDetails if it exists
 			return nodeDetailsArray.length > 0 ? nodeDetailsArray : null;
@@ -53,6 +67,8 @@ async function runAccessibilityCheck( url ) {
 
 		// Return the specific violation or null if not found
 		return colorContrastViolation || null;
+	} catch ( e ) {
+		console.error( e );
 	} finally {
 		// Close the browser
 		await browser.close();
