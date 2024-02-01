@@ -123,6 +123,8 @@ async function runAccessibilityChecksForURLs() {
 		// Writing HTML table to a file
 		const filePath = path.join( __dirname, '../report/index.html' );
 		fs.writeFileSync( filePath, htmlTable );
+		fs.copyFileSync( 'scripts/collapsible.js', 'report/collapsible.js' );
+		fs.copyFileSync( 'scripts/summarizer.js', 'report/summarizer.js' );
 
 		// Writing to CSV using the function from csvWriter.js
 		writeSimplifiedListToCSV( allSimplifiedLists );

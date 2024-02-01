@@ -39,6 +39,10 @@
 		.collapsible {
 			border-bottom: 1px solid gray;padding-bottom: 1.5rem;
 		}
+
+		.table-summary {
+			display: block;
+		}
 	</style>
 </head>
 
@@ -48,7 +52,9 @@
 	<p>Scanned {{pagesScanned}} pages.</p>
 	<p>{{passingPages}} pages without color contrast violations.</p>
 	<p>{{failingPages}} pages with color contrast violations.</p>
+	<div id="summary"></div>
 	{{{tableSections}}} <!-- Use triple mustache for raw HTML content -->
- <script src="../scripts/collapsible.js"></script>
+ <script src="./collapsible.js"></script>
+ <script src="./summarizer.js"></script>
 </body>
 </html>

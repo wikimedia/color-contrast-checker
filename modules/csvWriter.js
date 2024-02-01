@@ -10,7 +10,8 @@ function writeSimplifiedListToCSV( simplifiedLists ) {
 	}, [] );
 
 	if ( allData.length > 0 ) {
-		const csvContent = allData.map( entry => `${entry.pageUrl},${entry.selector},${entry.context}` ).join( '\n' );
+		// Use "..." as a delimiter so it doesn't interfere with "," which may appear in certain selectors.
+		const csvContent = allData.map( entry => `${entry.pageUrl}...${entry.selector}...${entry.context}` ).join( '\n' );
 		const directoryPath = path.join( __dirname, '../report' ); // Go up two levels
 		const filePath = path.join( directoryPath, 'simplifiedList.csv' );
 
