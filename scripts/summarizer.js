@@ -1,13 +1,3 @@
-/** Click handler for toggles */
-function toggleTable(name) {
-    const content = document.getElementById(name);
-    if (content.style.display === 'block') {
-        content.style.display = 'none';
-    } else {
-        content.style.display = 'block';
-    }
-}
-
 const app = document.getElementById('summary');
 
 const createParagraph = (text) => {
@@ -78,7 +68,7 @@ fetch('simplifiedList.csv').then((r) => r.text())
         const selectors = {};
         const titles = {};
         rows.forEach((row, i) => {
-            const cols = row.split('😱').map((col) => col.replace(/"/g, ''));
+            const cols = row.split('...').map((col) => col.replace(/"/g, ''));
             cols.forEach(( text, j ) => {
                 if (i > 0) {
                     if ( j === 0 ) {
@@ -99,6 +89,7 @@ fetch('simplifiedList.csv').then((r) => r.text())
             } );
         })
         const selectorTableNode = document.createElement('table');
+        selectorTableNode.classList.add( 'table-summary' );
         const row = document.createElement('tr');
         row.appendChild(
             makeColumn('selector', 'th' )

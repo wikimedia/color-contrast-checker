@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{pageTitle}}</title>
+	<style>
+		/* Add any CSS styling here */
+		html {
+			height: 100%;
+			background-image: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12);
+			font-family: sans-serif;
+		}
+
+		body {
+			margin: 10rem 5rem;
+			padding: 2rem 3rem;
+			background: #fffffff5;
+		}
+
+		table {
+			display: none;
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		th,
+		td {
+			border: 1px solid black;
+			padding: 8px;
+			text-align: left;
+		}
+
+		th {
+			background-color: #f2f2f2;
+		}
+
+		.collapsible {
+			border-bottom: 1px solid gray;padding-bottom: 1.5rem;
+		}
+
+		.table-summary {
+			display: block;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>{{pageTitle}}</h1>
+	<p>Baseline: {{totalItems}}</p>
+	<p>Scanned {{pagesScanned}} pages.</p>
+	<p>{{passingPages}} pages without color contrast violations.</p>
+	<p>{{failingPages}} pages with color contrast violations.</p>
+	<div id="summary"></div>
+	{{{tableSections}}} <!-- Use triple mustache for raw HTML content -->
+ <script src="./collapsible.js"></script>
+ <script src="./summarizer.js"></script>
+</body>
+</html>
