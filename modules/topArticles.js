@@ -47,24 +47,30 @@ async function getTopWikipediaArticles( project, limit = 1 ) {
 }
 
 // Creates test cases based on the top Wikipedia articles obtained from getTopWikipediaArticles.
-async function createTestCases() {
+/**
+ * @param {Object} options
+ * @param {string} [options.project]
+ * @param {string} [options.query]
+ * @param {string} [options.mobile]
+ * @return {array}
+ */
+async function createTestCases( options = {
+	mobile: true,
+	project: 'en.wikipedia',
+	query: ''
+} ) {
+	const { project, mobile } = options;
 	const topArticles = await Promise.all(
 		[
-			getTopWikipediaArticles( 'en.wikipedia' ),
-			getTopWikipediaArticles( 'fr.wikipedia' )
-
+			getTopWikipediaArticles( project, 100 )
 		]
 	);
-	const STATIC_TEST_SET = [
-		{
-			article: '81st_Golden_Globe_Awards',
-			project: 'https://en.wikipedia.org'
-		},
-		{
-			article: 'Saltburn_(film)',
-			project: 'https://en.wikipedia.org'
-		}
-	];
+	const examples = require( './examples.json' );
+	const STATIC_TEST_SET = ( examples[ project ] || [] ).map(
+		( example ) => Object.assign( {}, example, {
+			project: `https://${project}`
+		} )
+	);
 
 	if ( !topArticles ) {
 		console.error( 'Failed to fetch top articles.' );
@@ -72,10 +78,14 @@ async function createTestCases() {
 	}
 
 	// Use the production URL directly
+	const query = options.query ? `?${options.query}` : '';
 	const testCases = topArticles.flat( 1 ).concat( STATIC_TEST_SET ).map( ( article ) => {
+		if ( mobile ) {
+			host = article.project.replace( /https:\/\/([^\.]*)\.wiki/, 'https://$1.m.wiki' );
+		}
 		const encodedTitle = encodeURIComponent( article.article );
-		const url = `${article.project}/wiki/${encodedTitle}`;
-		return { url: url, title: article.article };
+		const url = `${host}/wiki/${encodedTitle}${query}`;
+		return { url, title: article.article, query };
 	} );
 
 	return testCases;
