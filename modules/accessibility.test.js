@@ -74,10 +74,10 @@ async function runAccessibilityCheck( url ) {
 	}
 }
 
-async function runAccessibilityChecksForURLs() {
+async function runAccessibilityChecksForURLs( project ) {
 
 	try {
-		const testCases = await createTestCases();
+		const testCases = await createTestCases( { project } );
 
 		if ( testCases.length === 0 ) {
 			console.log( "No test cases found." );

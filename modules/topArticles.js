@@ -80,8 +80,9 @@ async function createTestCases( options = {
 	// Use the production URL directly
 	const query = options.query ? `?${options.query}` : '';
 	const testCases = topArticles.flat( 1 ).concat( STATIC_TEST_SET ).map( ( article ) => {
+		let host = article.project.replace( /https:\/\/([^\.]*)\.wiki/, 'https://$1.wiki' );
 		if ( mobile ) {
-			host = article.project.replace( /https:\/\/([^\.]*)\.wiki/, 'https://$1.m.wiki' );
+			host = host.replace( /https:\/\/([^\.]*)\.wiki/, 'https://$1.m.wiki' );
 		}
 		const encodedTitle = encodeURIComponent( article.article );
 		const url = `${host}/wiki/${encodedTitle}${query}`;
