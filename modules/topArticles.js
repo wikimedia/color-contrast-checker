@@ -22,7 +22,7 @@ const oneDayAgo = new Date( currentDate );
 oneDayAgo.setDate( oneDayAgo.getDate() - 1 );
 
 // Retrieve the top Wikipedia articles using the Wikimedia API.
-async function getTopWikipediaArticles( project, limit = 1 ) {
+async function getTopWikipediaArticles( project, limit = 50 ) {
 	const endpoint = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${project}/all-access/${getFormattedDate( oneDayAgo )}`;
 
 	try {
@@ -62,7 +62,7 @@ async function createTestCases( options = {
 	const { project, mobile } = options;
 	const topArticles = await Promise.all(
 		[
-			getTopWikipediaArticles( project, 100 )
+			getTopWikipediaArticles( project, 50 )
 		]
 	);
 	const examples = require( './examples.json' );
@@ -80,8 +80,9 @@ async function createTestCases( options = {
 	// Use the production URL directly
 	const query = options.query ? `?${options.query}` : '';
 	const testCases = topArticles.flat( 1 ).concat( STATIC_TEST_SET ).map( ( article ) => {
+		let host = article.project.replace( /https:\/\/([^\.]*)\.wiki/, 'https://$1.wiki' );
 		if ( mobile ) {
-			host = article.project.replace( /https:\/\/([^\.]*)\.wiki/, 'https://$1.m.wiki' );
+			host = host.replace( /https:\/\/([^\.]*)\.wiki/, 'https://$1.m.wiki' );
 		}
 		const encodedTitle = encodeURIComponent( article.article );
 		const url = `${host}/wiki/${encodedTitle}${query}`;
