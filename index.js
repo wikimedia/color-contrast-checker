@@ -6,8 +6,19 @@ const { runAccessibilityChecksForURLs } = require( './modules/accessibility.test
 // Main function to run the application
 async function main() {
 	try {
+		// Get the project name from command line arguments
+		const args = process.argv.slice( 2 ); // Exclude 'node' and the script name
+		const projectIndex = args.findIndex( arg => arg === '--project' );
+		if ( projectIndex === -1 ) {
+			throw new Error( 'Project name not provided. Usage: node index.js --project <projectName>' );
+		}
+		const project = args[projectIndex + 1];
+		if ( !project ) {
+			throw new Error( 'Project name not provided. Usage: node index.js --project <projectName>' );
+		}
+
 		// Run accessibility checks and generate reports
-		await runAccessibilityChecksForURLs();
+		await runAccessibilityChecksForURLs( project );
 
 		console.log( 'Application ran successfully.' );
 	} catch ( error ) {

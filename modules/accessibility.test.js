@@ -68,11 +68,10 @@ async function runAccessibilityCheck( browser, url ) {
 	}
 }
 
-// Function to run accessibility checks for multiple URLs
-async function runAccessibilityChecksForURLs() {
+async function runAccessibilityChecksForURLs( project ) {
+
 	try {
-		// Grab test cases
-		const testCases = await createTestCases();
+		const testCases = await createTestCases( { project } );
 
 		// Run accessibility checks for each URL concurrently
 		const browser = await puppeteer.launch( {
