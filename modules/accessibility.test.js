@@ -64,6 +64,7 @@ async function runAccessibilityCheck( browser, url ) {
 		// Return the specific violation or null if not found
 		return colorContrastViolation || null;
 	} catch ( e ) {
+		page.close();
 		console.error( e );
 	}
 }
