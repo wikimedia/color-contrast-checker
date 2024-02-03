@@ -89,12 +89,10 @@ async function runAccessibilityChecksForURLs( project ) {
 		timeout: 60000
 	} );
 	const accessibilityChecks = testCases.map( async ( testCase, i ) => {
-		// every 10 wait for 10s - this makes sure we don't hit ip rate limits.
-		if ( i > 0 && i % 5 === 0 ) {
-			console.log('Sleeping for 30s so script does not hit rate limits.')
-			await sleep( 30000 );
-		}
+		// queue a query every 5s.
+		await sleep( 5000 * i );
 		try {
+			console.log(`Run accessibility check ${i}`);
 			return await runAccessibilityCheck( browser, testCase.url );
 		} catch ( e ) {
 			console.log( `Failed to run accessibility check on ${test.url}` );
