@@ -93,8 +93,12 @@ async function runAccessibilityChecksForURLs( project ) {
 		if ( i > 0 && i % 5 === 0 ) {
 			await sleep( 10000 );
 		}
-		const result = await runAccessibilityCheck( browser, testCase.url );
-		return result;
+		try {
+			return await runAccessibilityCheck( browser, testCase.url );
+		} catch ( e ) {
+			console.log( `Failed to run accessibility check on ${test.url}` );
+			return Promise.resolve( null );
+		}
 	} );
 
 	// Wait for all checks to complete
@@ -103,7 +107,8 @@ async function runAccessibilityChecksForURLs( project ) {
 
 	// Handle the results (each result corresponds to one URL)
 	const allSimplifiedLists = [];
-	results.forEach( ( result, index ) => {
+	// First filter out failed runs then loop through the successful ones.
+	results.filter( ( result ) => result !== null ).forEach( ( result, index ) => {
 		const testCase = testCases[index];
 		if ( result ) {
 			const simplifiedList = result.map( node => ( {
