@@ -81,70 +81,65 @@ function sleep( time ) {
 }
 
 async function runAccessibilityChecksForURLs( project ) {
+	const testCases = await createTestCases( { project } );
 
-	try {
-		const testCases = await createTestCases( { project } );
+	// Run accessibility checks for each URL concurrently
+	const browser = await puppeteer.launch( {
+		args: ['--no-sandbox'],
+		timeout: 60000
+	} );
+	const accessibilityChecks = testCases.map( async ( testCase, i ) => {
+		// every 10 wait for 10s - this makes sure we don't hit ip rate limits.
+		if ( i > 0 && i % 5 === 0 ) {
+			await sleep( 10000 );
+		}
+		const result = await runAccessibilityCheck( browser, testCase.url );
+		return result;
+	} );
 
-		// Run accessibility checks for each URL concurrently
-		const browser = await puppeteer.launch( {
-			args: ['--no-sandbox'],
-			timeout: 60000
-		} );
-		const accessibilityChecks = testCases.map( async ( testCase, i ) => {
-			// every 10 wait for 10s - this makes sure we don't hit ip rate limits.
-			if ( i > 0 && i % 5 === 0 ) {
-				await sleep( 10000 );
-			}
-			const result = await runAccessibilityCheck( browser, testCase.url );
-			return result;
-		} );
+	// Wait for all checks to complete
+	const results = await Promise.all( accessibilityChecks );
+	browser.close();
 
-		// Wait for all checks to complete
-		const results = await Promise.all( accessibilityChecks );
-		browser.close();
+	// Handle the results (each result corresponds to one URL)
+	const allSimplifiedLists = [];
+	results.forEach( ( result, index ) => {
+		const testCase = testCases[index];
+		if ( result ) {
+			const simplifiedList = result.map( node => ( {
+				selector: node.selector,
+				context: node.context,
+				pageUrl: testCase.url,
+				title: testCase.title,
+			} ) );
 
-		// Handle the results (each result corresponds to one URL)
-		const allSimplifiedLists = [];
-		results.forEach( ( result, index ) => {
-			const testCase = testCases[index];
-			if ( result ) {
-				const simplifiedList = result.map( node => ( {
-					selector: node.selector,
-					context: node.context,
-					pageUrl: testCase.url,
-					title: testCase.title,
-				} ) );
+			console.log( `Result for URL ${testCase.url}:`, {
+				simplifiedList,
+				colorContrastErrorNum: simplifiedList ? simplifiedList.length : 0,
+			} );
 
-				console.log( `Result for URL ${testCase.url}:`, {
-					simplifiedList,
-					colorContrastErrorNum: simplifiedList ? simplifiedList.length : 0,
-				} );
+			allSimplifiedLists.push( simplifiedList );
+		} else {
+			console.log( `No result for URL ${testCase.url}` );
+		}
+	} );
 
-				allSimplifiedLists.push( simplifiedList );
-			} else {
-				console.log( `No result for URL ${testCase.url}` );
-			}
-		} );
+	// Generating HTML table
+	const htmlTable = generateHTMLPage(
+		allSimplifiedLists.flat(),
+		noColorContrastViolationCount,
+		colorContrastViolationCount,
+		pagesScanned
+	);
 
-		// Generating HTML table
-		const htmlTable = generateHTMLPage(
-			allSimplifiedLists.flat(),
-			noColorContrastViolationCount,
-			colorContrastViolationCount,
-			pagesScanned
-		);
+	// Writing HTML table to a file
+	const filePath = path.join( __dirname, '../report/index.html' );
+	fs.writeFileSync( filePath, htmlTable );
+	fs.copyFileSync( 'scripts/collapsible.js', 'report/collapsible.js' );
+	fs.copyFileSync( 'scripts/summarizer.js', 'report/summarizer.js' );
 
-		// Writing HTML table to a file
-		const filePath = path.join( __dirname, '../report/index.html' );
-		fs.writeFileSync( filePath, htmlTable );
-		fs.copyFileSync( 'scripts/collapsible.js', 'report/collapsible.js' );
-		fs.copyFileSync( 'scripts/summarizer.js', 'report/summarizer.js' );
-
-		// Writing to CSV using the function from csvWriter.js
-		writeSimplifiedListToCSV( allSimplifiedLists );
-	} catch ( error ) {
-		console.error( 'Error during accessibility checks:', error );
-	}
+	// Writing to CSV using the function from csvWriter.js
+	writeSimplifiedListToCSV( allSimplifiedLists );
 }
 
 // Export the function
