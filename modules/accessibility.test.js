@@ -91,7 +91,8 @@ async function runAccessibilityChecksForURLs( project ) {
 	const accessibilityChecks = testCases.map( async ( testCase, i ) => {
 		// every 10 wait for 10s - this makes sure we don't hit ip rate limits.
 		if ( i > 0 && i % 5 === 0 ) {
-			await sleep( 10000 );
+			console.log('Sleeping for 30s so script does not hit rate limits.')
+			await sleep( 30000 );
 		}
 		try {
 			return await runAccessibilityCheck( browser, testCase.url );
