@@ -12,18 +12,18 @@ const decorateSelector = require( './decorateSelector' );
 let noColorContrastViolationCount = 0;
 let colorContrastViolationCount = 0;
 let pagesScanned = 0;
-let browser;
 
-async function newPage( url ) {
+
+async function newPage( browser, url ) {
 	const page = await browser.newPage();
 	await page.goto( url );
 	return page;
 }
 
 // Function to run accessibility check on a given URL
-async function runAccessibilityCheck( url ) {
+async function runAccessibilityCheck( browser, url ) {
 	try {
-		const page = await newPage( url );
+		const page = await newPage( browser, url );
 		// Inject axe-core script into the page
 		await page.evaluate( axeCore.source );
 
@@ -39,10 +39,10 @@ async function runAccessibilityCheck( url ) {
 
 		// Log the specific violation or null if not found
 		if ( colorContrastViolation ) {
-			console.error( 'Color contrast violation found in:', url );
+			console.error( 'Color contrast violation found' );
 			colorContrastViolationCount++;
 
-			const anotherPage = await newPage( url );
+			const anotherPage = await newPage( browser, url );
 			// Array to store nodeDetails
 			const nodeDetailsArray = await Promise.all(
 				colorContrastViolation.nodes.map( async ( node ) => {
@@ -57,40 +57,29 @@ async function runAccessibilityCheck( url ) {
 			// Return the array of nodeDetails if it exists
 			return nodeDetailsArray.length > 0 ? nodeDetailsArray : null;
 		} else {
-			console.log( 'No color contrast violation found in:', url );
+			console.log( 'No color contrast violation found.' );
 			noColorContrastViolationCount++;
 		}
 
 		// Return the specific violation or null if not found
 		return colorContrastViolation || null;
 	} catch ( e ) {
-		if ( e.name === 'TimeoutError' ) {
-			console.error( 'Navigation timeout occurred for URL:', url );
-			return null;
-		} else {
-			console.error( 'An error occurred during accessibility check:', e );
-			throw e;
-		}
+		console.error( e );
 	}
 }
 
-async function runAccessibilityChecksForURLs( project ) {
-
+// Function to run accessibility checks for multiple URLs
+async function runAccessibilityChecksForURLs() {
 	try {
-		const testCases = await createTestCases( { project } );
+		// Grab test cases
+		const testCases = await createTestCases();
 
-		if ( testCases.length === 0 ) {
-			console.log( "No test cases found." );
-			return;
-		}
-
-		browser = await puppeteer.launch( {
-			args: ['--no-sandbox'],
-			timeout: 60000
+		// Run accessibility checks for each URL concurrently
+		const browser = await puppeteer.launch( {
+			args: ['--no-sandbox']
 		} );
-
 		const accessibilityChecks = testCases.map( async ( testCase ) =>
-			await runAccessibilityCheck( testCase.url )
+			await runAccessibilityCheck( browser, testCase.url )
 		);
 
 		// Wait for all checks to complete
@@ -109,7 +98,14 @@ async function runAccessibilityChecksForURLs( project ) {
 					title: testCase.title,
 				} ) );
 
+				console.log( `Result for URL ${testCase.url}:`, {
+					simplifiedList,
+					colorContrastErrorNum: simplifiedList ? simplifiedList.length : 0,
+				} );
+
 				allSimplifiedLists.push( simplifiedList );
+			} else {
+				console.log( `No result for URL ${testCase.url}` );
 			}
 		} );
 
@@ -131,10 +127,6 @@ async function runAccessibilityChecksForURLs( project ) {
 		writeSimplifiedListToCSV( allSimplifiedLists );
 	} catch ( error ) {
 		console.error( 'Error during accessibility checks:', error );
-	} finally {
-		if ( browser ) {
-			await browser.close();
-		}
 	}
 }
 
