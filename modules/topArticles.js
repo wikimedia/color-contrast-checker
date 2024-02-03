@@ -19,7 +19,8 @@ function getFormattedDate( date ) {
 
 const currentDate = new Date();
 const oneDayAgo = new Date( currentDate );
-oneDayAgo.setDate( oneDayAgo.getDate() - 1 );
+// Use two days ago to avoid 404 (there are sometimes delays in generating the stats)
+oneDayAgo.setDate( oneDayAgo.getDate() - 2 );
 
 // Retrieve the top Wikipedia articles using the Wikimedia API.
 async function getTopWikipediaArticles( project, limit = 1 ) {
