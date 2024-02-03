@@ -68,7 +68,7 @@ async function createTestCases( options = {
 	const examples = require( './examples.json' );
 	const STATIC_TEST_SET = ( examples[ project ] || [] ).map(
 		( example ) => Object.assign( {}, example, {
-			project: `https://${project}`
+			project: `https://${project}.org`
 		} )
 	);
 
