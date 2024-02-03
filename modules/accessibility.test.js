@@ -68,6 +68,14 @@ async function runAccessibilityCheck( browser, url ) {
 	}
 }
 
+function sleep( time ) {
+	return new Promise( ( resolve ) => {
+		setTimeout( () => {
+			resolve();
+		}, time );
+	} );
+}
+
 async function runAccessibilityChecksForURLs( project ) {
 
 	try {
@@ -77,9 +85,14 @@ async function runAccessibilityChecksForURLs( project ) {
 		const browser = await puppeteer.launch( {
 			args: ['--no-sandbox']
 		} );
-		const accessibilityChecks = testCases.map( async ( testCase ) =>
-			await runAccessibilityCheck( browser, testCase.url )
-		);
+		const accessibilityChecks = testCases.map( async ( testCase, i ) => {
+			// every 10 wait for 10s - this makes sure we don't hit ip rate limits.
+			if ( i > 0 && i % 10 === 0 ) {
+				await sleep( 10000 );
+			}
+			const result = await runAccessibilityCheck( browser, testCase.url );
+			return result;
+		} );
 
 		// Wait for all checks to complete
 		const results = await Promise.all( accessibilityChecks );
