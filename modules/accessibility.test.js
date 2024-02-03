@@ -22,8 +22,9 @@ async function newPage( browser, url ) {
 
 // Function to run accessibility check on a given URL
 async function runAccessibilityCheck( browser, url ) {
+	let page;
 	try {
-		const page = await newPage( browser, url );
+		page = await newPage( browser, url );
 		// Inject axe-core script into the page
 		await page.evaluate( axeCore.source );
 
@@ -64,8 +65,10 @@ async function runAccessibilityCheck( browser, url ) {
 		// Return the specific violation or null if not found
 		return colorContrastViolation || null;
 	} catch ( e ) {
-		page.close();
 		console.error( e );
+	}
+	if ( page ) {
+		page.close();
 	}
 }
 
