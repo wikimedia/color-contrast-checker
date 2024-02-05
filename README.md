@@ -32,5 +32,10 @@ Color Contrast Tester
 node index.js
 ```
 
+### Advanced
+```
+node index.js --project fr.wikipedia --query "minervanightmode=1"
+```
+
 ### Important Note
 This tool is currently in development and should be used cautiously. Stay tuned for updates and improvements!
