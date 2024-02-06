@@ -40,7 +40,7 @@ async function runAccessibilityCheck( browser, url ) {
 
 		// Log the specific violation or null if not found
 		if ( colorContrastViolation ) {
-			console.error( 'Color contrast violation found' );
+			console.error( `Color contrast violation found on ${url}` );
 			colorContrastViolationCount++;
 
 			const anotherPage = await newPage( browser, url );
@@ -58,7 +58,7 @@ async function runAccessibilityCheck( browser, url ) {
 			// Return the array of nodeDetails if it exists
 			return nodeDetailsArray.length > 0 ? nodeDetailsArray : null;
 		} else {
-			console.log( 'No color contrast violation found.' );
+			console.log( `No color contrast violation found on ${url}.` );
 			noColorContrastViolationCount++;
 		}
 
@@ -92,7 +92,7 @@ async function runAccessibilityChecksForURLs( project, query, mobile ) {
 		// queue a query every 5s.
 		await sleep( 5000 * i );
 		try {
-			console.log(`Run accessibility check ${i}`);
+			console.log(`Run accessibility check ${i} on ${testCase.url}`);
 			return await runAccessibilityCheck( browser, testCase.url );
 		} catch ( e ) {
 			console.log( `Failed to run accessibility check on ${test.url}` );
@@ -107,7 +107,7 @@ async function runAccessibilityChecksForURLs( project, query, mobile ) {
 	// Handle the results (each result corresponds to one URL)
 	const allSimplifiedLists = [];
 	// First filter out failed runs then loop through the successful ones.
-	results.filter( ( result ) => result !== null ).forEach( ( result, index ) => {
+	results.forEach( ( result, index ) => {
 		const testCase = testCases[index];
 		if ( result ) {
 			const simplifiedList = result.map( node => ( {
