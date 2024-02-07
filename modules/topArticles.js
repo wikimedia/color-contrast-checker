@@ -83,7 +83,11 @@ async function createTestCases( options = {
 	const testCases = topArticles.flat( 1 ).concat( STATIC_TEST_SET ).map( ( article ) => {
 		let host = article.project.replace( /https:\/\/([^\.]*)\.wiki/, 'https://$1.wiki' );
 		if ( mobile ) {
-			host = host.replace( /https:\/\/([^\.]*)\.wiki/, 'https://$1.m.wiki' );
+			if ( host.indexOf( 'www.' ) > -1 ) {
+				host = host.replace ( 'www.', 'm.' );
+			} else {
+				host = host.replace( /https:\/\/([^\.]*)\.wiki/, 'https://$1.m.wiki' );
+			}
 		}
 		const encodedTitle = encodeURIComponent( article.article );
 		const url = `${host}/wiki/${encodedTitle}${query}`;
