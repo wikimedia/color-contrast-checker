@@ -12,18 +12,19 @@ const decorateSelector = require( './decorateSelector' );
 let noColorContrastViolationCount = 0;
 let colorContrastViolationCount = 0;
 let pagesScanned = 0;
-let browser;
 
-async function newPage( url ) {
+
+async function newPage( browser, url ) {
 	const page = await browser.newPage();
 	await page.goto( url );
 	return page;
 }
 
 // Function to run accessibility check on a given URL
-async function runAccessibilityCheck( url ) {
+async function runAccessibilityCheck( browser, url ) {
+	let page;
 	try {
-		const page = await newPage( url );
+		page = await newPage( browser, url );
 		// Inject axe-core script into the page
 		await page.evaluate( axeCore.source );
 
@@ -39,10 +40,10 @@ async function runAccessibilityCheck( url ) {
 
 		// Log the specific violation or null if not found
 		if ( colorContrastViolation ) {
-			console.error( 'Color contrast violation found in:', url );
+			console.error( `Color contrast violation found on ${url}` );
 			colorContrastViolationCount++;
 
-			const anotherPage = await newPage( url );
+			const anotherPage = await newPage( browser, url );
 			// Array to store nodeDetails
 			const nodeDetailsArray = await Promise.all(
 				colorContrastViolation.nodes.map( async ( node ) => {
@@ -57,85 +58,92 @@ async function runAccessibilityCheck( url ) {
 			// Return the array of nodeDetails if it exists
 			return nodeDetailsArray.length > 0 ? nodeDetailsArray : null;
 		} else {
-			console.log( 'No color contrast violation found in:', url );
+			console.log( `No color contrast violation found on ${url}.` );
 			noColorContrastViolationCount++;
 		}
 
 		// Return the specific violation or null if not found
 		return colorContrastViolation || null;
 	} catch ( e ) {
-		if ( e.name === 'TimeoutError' ) {
-			console.error( 'Navigation timeout occurred for URL:', url );
-			return null;
-		} else {
-			console.error( 'An error occurred during accessibility check:', e );
-			throw e;
-		}
+		console.error( e );
+	}
+	if ( page ) {
+		page.close();
 	}
 }
 
-async function runAccessibilityChecksForURLs( project ) {
+function sleep( time ) {
+	return new Promise( ( resolve ) => {
+		setTimeout( () => {
+			resolve();
+		}, time );
+	} );
+}
 
-	try {
-		const testCases = await createTestCases( { project } );
+async function runAccessibilityChecksForURLs( project, query, mobile ) {
+	const testCases = await createTestCases( { project, query, mobile } );
 
-		if ( testCases.length === 0 ) {
-			console.log( "No test cases found." );
-			return;
+	// Run accessibility checks for each URL concurrently
+	const browser = await puppeteer.launch( {
+		args: ['--no-sandbox'],
+		timeout: 60000
+	} );
+	const accessibilityChecks = testCases.map( async ( testCase, i ) => {
+		// queue a query every 5s.
+		await sleep( 5000 * i );
+		try {
+			console.log(`Run accessibility check ${i} on ${testCase.url}`);
+			return await runAccessibilityCheck( browser, testCase.url );
+		} catch ( e ) {
+			console.log( `Failed to run accessibility check on ${test.url}` );
+			return Promise.resolve( null );
 		}
+	} );
 
-		browser = await puppeteer.launch( {
-			args: ['--no-sandbox'],
-			timeout: 60000
-		} );
+	// Wait for all checks to complete
+	const results = await Promise.all( accessibilityChecks );
+	browser.close();
 
-		const accessibilityChecks = testCases.map( async ( testCase ) =>
-			await runAccessibilityCheck( testCase.url )
-		);
+	// Handle the results (each result corresponds to one URL)
+	const allSimplifiedLists = [];
+	// First filter out failed runs then loop through the successful ones.
+	results.forEach( ( result, index ) => {
+		const testCase = testCases[index];
+		if ( result ) {
+			const simplifiedList = result.map( node => ( {
+				selector: node.selector,
+				context: node.context,
+				pageUrl: testCase.url,
+				title: testCase.title,
+			} ) );
 
-		// Wait for all checks to complete
-		const results = await Promise.all( accessibilityChecks );
-		browser.close();
+			console.log( `Result for URL ${testCase.url}:`, {
+				simplifiedList,
+				colorContrastErrorNum: simplifiedList ? simplifiedList.length : 0,
+			} );
 
-		// Handle the results (each result corresponds to one URL)
-		const allSimplifiedLists = [];
-		results.forEach( ( result, index ) => {
-			const testCase = testCases[index];
-			if ( result ) {
-				const simplifiedList = result.map( node => ( {
-					selector: node.selector,
-					context: node.context,
-					pageUrl: testCase.url,
-					title: testCase.title,
-				} ) );
-
-				allSimplifiedLists.push( simplifiedList );
-			}
-		} );
-
-		// Generating HTML table
-		const htmlTable = generateHTMLPage(
-			allSimplifiedLists.flat(),
-			noColorContrastViolationCount,
-			colorContrastViolationCount,
-			pagesScanned
-		);
-
-		// Writing HTML table to a file
-		const filePath = path.join( __dirname, '../report/index.html' );
-		fs.writeFileSync( filePath, htmlTable );
-		fs.copyFileSync( 'scripts/collapsible.js', 'report/collapsible.js' );
-		fs.copyFileSync( 'scripts/summarizer.js', 'report/summarizer.js' );
-
-		// Writing to CSV using the function from csvWriter.js
-		writeSimplifiedListToCSV( allSimplifiedLists );
-	} catch ( error ) {
-		console.error( 'Error during accessibility checks:', error );
-	} finally {
-		if ( browser ) {
-			await browser.close();
+			allSimplifiedLists.push( simplifiedList );
+		} else {
+			console.log( `No result for URL ${testCase.url}` );
 		}
-	}
+	} );
+
+	// Generating HTML table
+	const htmlTable = generateHTMLPage(
+		allSimplifiedLists.flat(),
+		noColorContrastViolationCount,
+		colorContrastViolationCount,
+		pagesScanned
+	);
+
+	// Writing HTML table to a file
+	const filePath = path.join( __dirname, '../report/index.html' );
+	fs.writeFileSync( filePath, htmlTable );
+	fs.copyFileSync( 'scripts/collapsible.js', 'report/collapsible.js' );
+	fs.copyFileSync( 'scripts/summarizer.js', 'report/summarizer.js' );
+
+	// Writing to CSV using the function from csvWriter.js
+	writeSimplifiedListToCSV( allSimplifiedLists );
 }
 
 // Export the function

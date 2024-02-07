@@ -1,24 +1,14 @@
 const puppeteer = require( 'puppeteer' );
 const fs = require( 'fs' );
 const path = require( 'path' );
+const { program } = require( 'commander' );
 const { runAccessibilityChecksForURLs } = require( './modules/accessibility.test.js' );
 
 // Main function to run the application
-async function main() {
+async function main( options ) {
 	try {
-		// Get the project name from command line arguments
-		const args = process.argv.slice( 2 ); // Exclude 'node' and the script name
-		const projectIndex = args.findIndex( arg => arg === '--project' );
-		if ( projectIndex === -1 ) {
-			throw new Error( 'Project name not provided. Usage: node index.js --project <projectName>' );
-		}
-		const project = args[projectIndex + 1];
-		if ( !project ) {
-			throw new Error( 'Project name not provided. Usage: node index.js --project <projectName>' );
-		}
-
 		// Run accessibility checks and generate reports
-		await runAccessibilityChecksForURLs( project );
+		await runAccessibilityChecksForURLs( options.project, options.query, options.mobile );
 
 		console.log( 'Application ran successfully.' );
 	} catch ( error ) {
@@ -26,5 +16,29 @@ async function main() {
 	}
 }
 
-// Call the main function to start the application
-main();
+const projectOpt = [
+	'-p, --project <project>',
+	'Project to run color contrast checker on. Defaults to en.wikipedia',
+	'en.wikipedia'
+];
+
+const queryOpt = [
+	'-q, --query <query>',
+	'Query string to apply to all URLs'
+];
+
+const mobileOpt = [
+	'-m, --mobile',
+	'Force mobile mode'
+];
+
+program
+	.description( 'Welcome to the pixel CLI to perform visual regression testing' )
+	.option( ...projectOpt )
+	.option( ...queryOpt )
+	.option( ...mobileOpt )
+	.requiredOption( ...projectOpt )
+	.action( async ( opts ) => {
+		main( opts );
+	} );
+program.parse();

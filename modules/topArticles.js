@@ -19,10 +19,11 @@ function getFormattedDate( date ) {
 
 const currentDate = new Date();
 const oneDayAgo = new Date( currentDate );
-oneDayAgo.setDate( oneDayAgo.getDate() - 1 );
+// Use two days ago to avoid 404 (there are sometimes delays in generating the stats)
+oneDayAgo.setDate( oneDayAgo.getDate() - 2 );
 
 // Retrieve the top Wikipedia articles using the Wikimedia API.
-async function getTopWikipediaArticles( project, limit = 50 ) {
+async function getTopWikipediaArticles( project, limit = 1 ) {
 	const endpoint = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${project}/all-access/${getFormattedDate( oneDayAgo )}`;
 
 	try {
@@ -62,13 +63,13 @@ async function createTestCases( options = {
 	const { project, mobile } = options;
 	const topArticles = await Promise.all(
 		[
-			getTopWikipediaArticles( project, 50 )
+			getTopWikipediaArticles( project, 100 )
 		]
 	);
 	const examples = require( './examples.json' );
 	const STATIC_TEST_SET = ( examples[ project ] || [] ).map(
 		( example ) => Object.assign( {}, example, {
-			project: `https://${project}`
+			project: `https://${project}.org`
 		} )
 	);
 
