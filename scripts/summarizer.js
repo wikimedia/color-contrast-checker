@@ -31,7 +31,11 @@ const generalizeSelector = (text) => {
     // e.g. https://en.wikipedia.org/wiki/Pakistan
     } else if ( text.match( /\.(quotebox)/ ) ) {
         return '.quotebox [[phab:TBC]]';
-    } else if ( text.match( /\.(bandeau-container)/ ) ) {
+    }
+    else if ( text.match( /\.(hatnote)/ ) ) {
+        return 'Problem involving .hatnote [[phab:TBC]]';
+    }
+    else if ( text.match( /\.(bandeau-container)/ ) ) {
         return '.bandeau-container [[phab:TBC]]';
     } else if ( text.match( /\.(autres-projets)/ ) ) {
         return 'Other projects template (.autres-projets) [[phab:TBC]]';
