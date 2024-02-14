@@ -15,4 +15,8 @@ document.addEventListener( "DOMContentLoaded", function () {
             }
         } );
     } );
+
+    document.getElementById( 'expandAll' ).addEventListener( 'click', () => {
+        Array.from( document.querySelectorAll( '.collapsible' ) ).forEach( ( a ) => a.click() );
+    } );
 } );
