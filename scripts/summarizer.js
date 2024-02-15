@@ -14,7 +14,7 @@ const makeColumn = (text, tagName) => {
 };
 
 const matches = {
-    'div\.toc > div.toctitle': 'TOC',
+    'div\.toc > div.toctitle': 'TOC [[phab:T357590]]',
     '\\.extiw': '.extiw',
     '.helpbox-content': '.helpbox-content',
     'div\.tech-header-tabs': 'div.tech-header-tabs',
@@ -29,17 +29,17 @@ const matches = {
     '\.CategoryTreeSection': 'CategoryTreeSection [[phab:???]]',
     '\.flow-board': 'Flow [[phab:T357600]]',
     '\.template-pd-help-page': '.template-pd-help-page [[phab:???]]',
-    '\.hatnote': '.hatnote',
+    '\.hatnote': '.hatnote [[phab:T357721]]',
     '\.dablink': '.dablink',
-    '\.ambox': '.ambox',
+    '\.ambox': '.ambox [[phab:T357733]]',
     'div\.cytat': 'div.cytat',
-    '\.p-current-events': '.p-current-events',
+    '\.p-current-events': '.p-current-events [[phab:T357717]]',
     '\.NavFrame': '.NavFrame',
     '\.citation-needed-content': '\.citation-needed-content',
     '\.toccolours': '.toccolours',
-    '(div\.MainPageBG\.mp-box|h2\.mp-h2|div\.mp-box|h1 \> \\[id\\=\'Welcome_to_Wikipedia)': 'Issue with main page (div.MainPageBG.mp-box)',
-    '\.track-listing': '\.track-listing',
-    '\.side-box': '\.side-box',
+    '(div\.MainPageBG\.mp-box|h2\.mp-h2|div\.mp-box|h1 \> \\[id\\=\'Welcome_to_Wikipedia)': 'Issue with main page (div.MainPageBG.mp-box) [[phab:T356344]]',
+    '\.track-listing': '\.track-listing [[phab:T357730]]',
+    '\.side-box': '\.side-box [[phab:T357726]]',
     '\.cs1-visible-error.': '\.cs1-visible-error',
     'div.mw-references-wrap': 'div.mw-references-wrap',
     '\.ext-discussiontools-init-section-bar': '.ext-discussiontools-init-section-bar',
@@ -75,7 +75,7 @@ const generalizeSelector = (text) => {
         return 'current-events-sidebar (portal pages) [[phab:TBC]]';
     // e.g. https://en.wikipedia.org/wiki/Pakistan
     } else if ( text.match( /\.(quotebox)/ ) ) {
-        return '.quotebox [[phab:TBC]]';
+        return '.quotebox [[phab:T357735]]';
     } else if ( text.match( /\.(bandeau-container)/ ) ) {
         return '.bandeau-container [[phab:TBC]]';
     } else if ( text.match( /id='mp-/ ) ) {
