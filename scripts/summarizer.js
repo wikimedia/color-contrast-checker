@@ -1,4 +1,6 @@
+(function () {
 const app = document.getElementById('summary');
+app.innerHTML = '';
 
 const createParagraph = (text) => {
     const reportNode = document.createElement( 'p' );
@@ -11,12 +13,55 @@ const makeColumn = (text, tagName) => {
     return colNode;
 };
 
+const matches = {
+    'div\.toc > div.toctitle': 'TOC',
+    '\\.extiw': '.extiw',
+    '.helpbox-content': '.helpbox-content',
+    'div\.tech-header-tabs': 'div.tech-header-tabs',
+    '.tech-header-intro': '.tech-header-intro',
+    '.warning-message.warning': '.warning-message.warning',
+    '.ambox-notice': '.ambox-notice',
+    '.ombox-content': '.ombox-content',
+    'div\\[style\\] >': 'Inline style div[style] no classes',
+    'div.rlicense-text': 'div.rlicense-text',
+    '(\.mw-pt-languages|mw-pt-translate-header)': 'Language [[phab:T356821]]',
+    '\.mw-highlight': 'Syntax highlight [[phab:T356956]]',
+    '\.CategoryTreeSection': 'CategoryTreeSection [[phab:???]]',
+    '\.flow-board': 'Flow [[phab:T357600]]',
+    '\.template-pd-help-page': '.template-pd-help-page [[phab:???]]',
+    '\.hatnote': '.hatnote',
+    '\.dablink': '.dablink',
+    '\.ambox': '.ambox',
+    'div\.cytat': 'div.cytat',
+    '\.p-current-events': '.p-current-events',
+    '\.NavFrame': '.NavFrame',
+    '\.citation-needed-content': '\.citation-needed-content',
+    '\.toccolours': '.toccolours',
+    '(div\.MainPageBG\.mp-box|h2\.mp-h2|div\.mp-box|h1 \> \\[id\\=\'Welcome_to_Wikipedia)': 'Issue with main page (div.MainPageBG.mp-box)',
+    '\.track-listing': '\.track-listing',
+    '\.side-box': '\.side-box',
+    '\.cs1-visible-error.': '\.cs1-visible-error',
+    'div.mw-references-wrap': 'div.mw-references-wrap',
+    '\.ext-discussiontools-init-section-bar': '.ext-discussiontools-init-section-bar',
+    '\.(autres-projets|\.tpl-sisproj|.sistersitebox)': 'Other projects template (.autres-projets or .tpl-sisproj or .sistersitebox) [[phab:TBC]]'
+}
+
 const generalizeSelector = (text) => {
     // only worry about content post parser output.
-    const potext = text.split( '.mw-parser-output')[1] || '';
+    const base = text.indexOf( 'section.mf-section-0' ) > text.indexOf( '.mw-parser-output' ) ?
+        'section.mf-section-0' : '.mw-parser-output';
+    const potext = text.split(base)[1] || '';
+    
     if ( potext.indexOf('.') === -1 && potext.indexOf('[') === -1 ) {
         // the selector contains no classes or style attributes so must be a false positive
         return '';
+    }
+
+
+    for ( var regex in matches ) {
+        if ( text.match( new RegExp( regex ) ) ) {
+            return matches[regex];
+        }
     }
 
     if ( text.match( /\[style\].*\.reference > a/ ) ) {
@@ -33,16 +78,14 @@ const generalizeSelector = (text) => {
         return '.quotebox [[phab:TBC]]';
     } else if ( text.match( /\.(bandeau-container)/ ) ) {
         return '.bandeau-container [[phab:TBC]]';
-    } else if ( text.match( /\.(autres-projets)/ ) ) {
-        return 'Other projects template (.autres-projets) [[phab:TBC]]';
     } else if ( text.match( /id='mp-/ ) ) {
         return 'main page template issue [phab:TBC]';
     } else if ( text.match( /\.(infobox|infobox_v2)/ ) ) {
-        return 'infobox related issue [phab:TBC]';
+        return 'infobox related issue [[phab:T357453]]';
     } else if ( text.match( /\.(navbox-even|navbox-abovebelow|navbox-title)/ ) ) {
         return 'navbox related issue [phab:TBC]';
     } else if ( text.match( /table[^\ ]*\[style\]/ ) ) {
-        return 'Table with style attribute [[phab:TBC]]'
+        return 'Table with style attribute [[phab:T357585]]'
     } else if ( text.match( /[#=]CITEREF/ ) ) {
         return '#CITEREF* [[phab:TBC]]';
     } else if ( text.match( /sup.ext-phonos-attribution.noexcerpt.navigation-not-searchable > a/ ) ) {
@@ -117,3 +160,4 @@ fetch('simplifiedList.csv').then((r) => r.text())
             createParagraph( `The following lists articles on a per page basis for investigation.` )
         );
     });
+}());
