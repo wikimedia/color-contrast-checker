@@ -47,40 +47,83 @@ async function getTopWikipediaArticles( project, limit = 1 ) {
 	}
 }
 
+async function randomPages( project, limit ) {
+	const endpoint = `https://${project}.org/w/api.php?action=query&format=json&prop=&list=random&formatversion=2&rnnamespace=0&rnlimit=${limit}`;
+
+	try {
+		const response = await fetch( endpoint );
+
+		if ( response.ok ) {
+			return response.json().then( ( r ) => {
+				return r.query.random.map(( page ) => ( {
+					article: page.title,
+					project: `https://${project}.org`
+				} ) );
+			});
+		}
+	} catch ( error ) {
+		return null;
+	}
+}
+
+/**
+ * 
+ * @param {string} source
+ * @param {string} project
+ * @param {number} limit
+ * @returns 
+ */
+const getPages = ( source, project, limit ) => {
+	console.log( `Obtaining pages from ${source}` );
+	switch ( source ) {
+		case 'random':
+			return randomPages( project, limit );
+		case 'static':
+			const examples = require( './examples.json' );
+			const STATIC_TEST_SET = ( examples[ project ] || [] ).map(
+				( example ) => Object.assign( {}, example, {
+					project: `https://${project}.org`
+				} )
+			);
+			return Promise.resolve( STATIC_TEST_SET );
+		default:
+			return getTopWikipediaArticles( project, limit );
+
+	}
+}
+
 // Creates test cases based on the top Wikipedia articles obtained from getTopWikipediaArticles.
 /**
  * @param {Object} options
  * @param {string} [options.project]
  * @param {string} [options.query]
  * @param {string} [options.mobile]
+ * @param {string} [options.source]
+ * @param {number} [options.limit]
  * @return {array}
  */
 async function createTestCases( options = {
 	mobile: true,
 	project: 'en.wikipedia',
-	query: ''
+	query: '',
+	source: 'pageviews',
+	limit: 100
 } ) {
-	const { project, mobile } = options;
+	const { project, mobile, source, limit } = options;
 	const topArticles = await Promise.all(
 		[
-			getTopWikipediaArticles( project, 100 )
+			getPages( source, project, limit )
 		]
-	);
-	const examples = require( './examples.json' );
-	const STATIC_TEST_SET = ( examples[ project ] || [] ).map(
-		( example ) => Object.assign( {}, example, {
-			project: `https://${project}.org`
-		} )
 	);
 
 	if ( !topArticles ) {
-		console.error( 'Failed to fetch top articles.' );
+		console.error( 'Failed to fetch.' );
 		return null;
 	}
 
 	// Use the production URL directly
 	const query = options.query ? `?${options.query}` : '';
-	const testCases = topArticles.flat( 1 ).concat( STATIC_TEST_SET ).map( ( article ) => {
+	const testCases = topArticles.flat( 1 ).map( ( article ) => {
 		let host = article.project.replace( /https:\/\/([^\.]*)\.wiki/, 'https://$1.wiki' );
 		if ( mobile ) {
 			if ( host.indexOf( 'www.' ) > -1 ) {

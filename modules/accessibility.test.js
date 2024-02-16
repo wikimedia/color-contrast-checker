@@ -80,8 +80,8 @@ function sleep( time ) {
 	} );
 }
 
-async function runAccessibilityChecksForURLs( project, query, mobile ) {
-	const testCases = await createTestCases( { project, query, mobile } );
+async function runAccessibilityChecksForURLs( project, query, mobile, source, limit ) {
+	const testCases = await createTestCases( { project, query, mobile, source, limit } );
 
 	// Run accessibility checks for each URL concurrently
 	const browser = await puppeteer.launch( {
