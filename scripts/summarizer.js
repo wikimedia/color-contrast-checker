@@ -15,22 +15,23 @@ const makeColumn = (text, tagName) => {
 
 const matches = {
     'div\.toc > div.toctitle': 'TOC [[phab:T357590]]',
-    '\\.extiw': '.extiw',
+    '\\.extiw': '.extiw [[phab:T356825]]',
     '.helpbox-content': '.helpbox-content',
     'div\.tech-header-tabs': 'div.tech-header-tabs',
     '.tech-header-intro': '.tech-header-intro',
     '.warning-message.warning': '.warning-message.warning',
+    'font[color]': '.ambox-notice',
     '.ambox-notice': '.ambox-notice',
     '.ombox-content': '.ombox-content',
     'div\\[style\\] >': 'Inline style div[style] no classes',
     'div.rlicense-text': 'div.rlicense-text',
-    '(\.mw-pt-languages|mw-pt-translate-header)': 'Language [[phab:T356821]]',
+    '\.(mw-pt-languages|mw-pt-translate-header|mw-translate-fuzzy)': 'Language [[phab:T356821]]',
     '\.mw-highlight': 'Syntax highlight [[phab:T356956]]',
     '\.CategoryTreeSection': 'CategoryTreeSection [[phab:???]]',
     '\.flow-board': 'Flow [[phab:T357600]]',
     '\.template-pd-help-page': '.template-pd-help-page [[phab:???]]',
     '\.hatnote': '.hatnote [[phab:T357721]]',
-    '\.dablink': '.dablink',
+    '\.dablink': 'color palette (.dablink) [[phab:T356427]]',
     '\.ambox': '.ambox [[phab:T357733]]',
     'div\.cytat': 'div.cytat',
     '\.p-current-events': '.p-current-events [[phab:T357717]]',
@@ -42,7 +43,7 @@ const matches = {
     '\.side-box': '\.side-box [[phab:T357726]]',
     '\.cs1-visible-error.': '\.cs1-visible-error',
     'div.mw-references-wrap': 'div.mw-references-wrap',
-    '\.ext-discussiontools-init-section-bar': '.ext-discussiontools-init-section-bar',
+    '(\.ext-discussiontools-init-replylink-buttons|\.ext-discussiontools-init-section-bar|\.autocomment|\.ext-discussiontools-init-timestamplink)': 'color-subtle (T357699)',
     '\.(autres-projets|\.tpl-sisproj|.sistersitebox)': 'Other projects template (.autres-projets or .tpl-sisproj or .sistersitebox) [[phab:TBC]]'
 }
 
