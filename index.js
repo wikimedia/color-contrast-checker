@@ -8,7 +8,7 @@ const { runAccessibilityChecksForURLs } = require( './modules/accessibility.test
 async function main( options ) {
 	try {
 		// Run accessibility checks and generate reports
-		await runAccessibilityChecksForURLs( options.project, options.query, options.mobile );
+		await runAccessibilityChecksForURLs( options.project, options.query, options.mobile, options.source, options.limit );
 
 		console.log( 'Application ran successfully.' );
 	} catch ( error ) {
@@ -32,11 +32,25 @@ const mobileOpt = [
 	'Force mobile mode'
 ];
 
+const sourceOpt = [
+	'-s, --source <query>',
+	'Either "random" or "pageviews"',
+	'pageviews'
+];
+
+const limitOpt = [
+	'-l, --limit <query>',
+	'Default: 100',
+	'100'
+];
+
 program
 	.description( 'Welcome to the pixel CLI to perform visual regression testing' )
 	.option( ...projectOpt )
 	.option( ...queryOpt )
 	.option( ...mobileOpt )
+	.option( ...sourceOpt )
+	.option( ...limitOpt )
 	.requiredOption( ...projectOpt )
 	.action( async ( opts ) => {
 		main( opts );
