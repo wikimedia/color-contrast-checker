@@ -34,15 +34,41 @@ const matches = {
     '\.dablink': 'color palette (.dablink) [[phab:T356427]]',
     '\.ambox': '.ambox [[phab:T357733]]',
     'div\.cytat': 'div.cytat',
+    '\\.reference-cadre': '.reference-cadre',
+    '(\\[#=\\]CITEREF|\\[id=\'cite_ref|\\#cite_)': '#CITEREF* [[phab:TBC]]',
+    '\\.mbox-small': '.mbox-small',
+    '\.jquery-tablesorter': '.jquery-tablesorter',
+    '\\.fileinfotpl-type-artwork': '.fileinfotpl-type-artwork',
+    '\\[bgcolor': 'using HTML4 bgcolor attribute',
     '\.p-current-events': '.p-current-events [[phab:T357717]]',
     '\.NavFrame': '.NavFrame',
+    '\\.cachelinks': '.cachelinks',
     '\.citation-needed-content': '\.citation-needed-content',
+    '\\.sortable': '.sortable',
     '\.toccolours': '.toccolours',
-    '(div\.MainPageBG\.mp-box|h2\.mp-h2|div\.mp-box|h1 \> \\[id\\=\'Welcome_to_Wikipedia)': 'Issue with main page (div.MainPageBG.mp-box) [[phab:T356344]]',
+    '\\.ilustracja-z-etykietami': '.ilustracja-z-etykietami',
+    '\.bandeau-portail': '\.bandeau-portail',
+    '\\.mw-redirect': '.mw-redirect',
+    '\.standings-box': '.standings-box',
+    '\\.excerpt': '.excerpt',
+    '\\.plainlinks': '.plainlinks',
+    '\\.VT.rellink': '.VT.rellink',
+    '\.BarChartTemplate': '.BarChartTemplate',
+    '(div\.MainPageBG\.mp-box|\.main-wrapper|\.main-top|\.mp-|h2\.mp-h2|div\.mp-box|h1 \> \\[id\\=\'Welcome_to_Wikipedia)': 'Issue with main page (div.MainPageBG.mp-box) [[phab:T356344]]',
     '\.track-listing': '\.track-listing [[phab:T357730]]',
     '\.side-box': '\.side-box [[phab:T357726]]',
     '\.cs1-visible-error.': '\.cs1-visible-error',
+    '\.reflist.columns': '.reflist.columns',
+    '\\.listaref': '.listaref',
+    '\\.liste-horizontale': '.liste-horizontale',
+    '\\.ilh-all': '.ilh-all',
+    '\\.flexquote': '.flexquote',
     'div.mw-references-wrap': 'div.mw-references-wrap',
+    '.mw-kartographer-maplink': '.mw-kartographer-maplink',
+    '\.listing-metadata': '.listing-metadata',
+    '\\.(navbox-even|navbox|navbox-abovebelow|navbox-title)': 'navbox related issue [phab:TBC]',
+    'table.wikitable.plainrowheaders': 'table.wikitable.plainrowheaders',
+    'table.wikitable.football-squad': 'table.wikitable.football-squad',
     '(\.ext-discussiontools-init-replylink-buttons|\.ext-discussiontools-init-section-bar|\.autocomment|\.ext-discussiontools-init-timestamplink)': 'color-subtle (T357699)',
     '\.(autres-projets|\.tpl-sisproj|.sistersitebox)': 'Other projects template (.autres-projets or .tpl-sisproj or .sistersitebox) [[phab:T358016]]'
 }
@@ -96,8 +122,6 @@ const generalizeSelector = (text) => {
         return '.colonnes.liste-simple [[phab:T358014]]';
     } else if ( text.match( /a\.mw-redirect/ ) ) {
         return 'a.mw-redirect [[phab:T358015]]';
-    } else if ( text.match( /(table|\.wikitable)/ ) ) {
-        return 'Undiagnosed table issue table or .wikitable [[phab:T357998]]';
     } else if ( text.match( /(noprint|\.external|cite\.citation|\.nowrap|span\.ouvrage > span\.italique|\.reference-accessdate|small\.cachelinks)/ ) ) {
         // these are false positives and do not impact dark mode.
         return '';
