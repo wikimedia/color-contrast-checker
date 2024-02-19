@@ -80,7 +80,7 @@ function sleep( time ) {
 	} );
 }
 
-async function runAccessibilityChecksForURLs( project, query, mobile, source, limit ) {
+async function runAccessibilityChecksForURLs( project, query, mobile, source, limit, sleepDuration = 5000 ) {
 	const testCases = await createTestCases( { project, query, mobile, source, limit } );
 
 	// Run accessibility checks for each URL concurrently
@@ -90,7 +90,7 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 	} );
 	const accessibilityChecks = testCases.map( async ( testCase, i ) => {
 		// queue a query every 5s.
-		await sleep( 5000 * i );
+		await sleep( sleepDuration * i );
 		try {
 			console.log(`Run accessibility check ${i} on ${testCase.url}`);
 			return await runAccessibilityCheck( browser, testCase.url );
