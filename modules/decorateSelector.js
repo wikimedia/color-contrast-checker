@@ -1,8 +1,9 @@
 module.exports = async ( page, selector ) => {
 	await page.waitForFunction( 'typeof $ !== "undefined"' );
 	const newSelector = await page.evaluate( async ( selectorString ) => {
-		const injectClass = ( str, classSelector, hasStyle ) => {
+		const injectClass = ( str, classSelector, hasStyle, hasBgColor ) => {
 			const styleSuffix = hasStyle ? '[style]' : '';
+			const bgSuffix = hasBgColor ? '[bgcolor]' : '';
 			let prefix = '';
 			let suffix = '';
 			if ( str.indexOf( ']' ) > -1 ) {
@@ -16,7 +17,7 @@ module.exports = async ( page, selector ) => {
 			} else {
 				prefix = str;
 			}
-			return `${prefix}${classSelector}${suffix}${styleSuffix}`;
+			return `${prefix}${classSelector}${suffix}${styleSuffix}${bgSuffix}`;
 		};
 		const selector = selectorString.split( ' > ' ).map( ( selector ) => {
 			selector = selector.trim();
@@ -35,16 +36,17 @@ module.exports = async ( page, selector ) => {
 				return '';
 			}
 			let j = selector.length - 1;
-			while ( node && node.id !== 'mw-content-text' ) {
+			while ( node && node.id !== 'mw-content-text' && node.nodeType !== 9 ) {
 				const newSelector = ( node.getAttribute( 'class' ) || '' ).split( ' ' ).join( '.' );
 				const hasStyle = node.hasAttribute( 'style' );
+				const hasBgColor = node.hasAttribute( 'bgcolor' );
 				const hasColorStyle = hasStyle && node.getAttribute( 'style' ).match(/(color|background|border)/g);
 				if ( newSelector && j > -1 ) {
-					selector[j] = injectClass( selector[j], `.${newSelector}`, !!hasColorStyle );
+					selector[j] = injectClass( selector[j], `.${newSelector}`, !!hasColorStyle, hasBgColor );
 				}
 				if ( j < 0 ) {
 					selector.unshift(
-						injectClass( node.tagName.toLowerCase(), newSelector ? `.${newSelector}` : '', !!hasColorStyle )
+						injectClass( node.tagName.toLowerCase(), newSelector ? `.${newSelector}` : '', !!hasColorStyle, hasBgColor )
 					);
 				}
 				j--;
