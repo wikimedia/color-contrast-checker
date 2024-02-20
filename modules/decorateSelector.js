@@ -33,20 +33,20 @@ module.exports = async ( page, selector ) => {
 			let node = $( selector.join( ' > ' ).replace( '$', '\$' ) )[ 0 ];
 			if ( !node ) {
 				// If we can't find the node, no point in putting it in the results
-				return '';
+				return `/* failed to decorate */ ${selectorString}`;
 			}
 			let j = selector.length - 1;
 			while ( node && node.id !== 'mw-content-text' && node.nodeType !== 9 ) {
 				const newSelector = ( node.getAttribute( 'class' ) || '' ).split( ' ' ).join( '.' );
 				const hasStyle = node.hasAttribute( 'style' );
 				const hasBgColor = node.hasAttribute( 'bgcolor' );
-				const hasColorStyle = hasStyle && node.getAttribute( 'style' ).match(/(color|background|border)/g);
-				if ( newSelector && j > -1 ) {
-					selector[j] = injectClass( selector[j], `.${newSelector}`, !!hasColorStyle, hasBgColor );
+				const hasColorStyle = !!( hasStyle && node.getAttribute( 'style' ).match(/(color|background|border)/g) );
+				if ( j > -1 ) {
+					selector[j] = injectClass( selector[j], `.${newSelector}`, hasColorStyle, hasBgColor );
 				}
 				if ( j < 0 ) {
 					selector.unshift(
-						injectClass( node.tagName.toLowerCase(), newSelector ? `.${newSelector}` : '', !!hasColorStyle, hasBgColor )
+						injectClass( node.tagName.toLowerCase(), newSelector ? `.${newSelector}` : '', hasColorStyle, hasBgColor )
 					);
 				}
 				j--;
