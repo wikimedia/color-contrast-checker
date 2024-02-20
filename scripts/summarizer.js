@@ -107,7 +107,7 @@ fetch('simplifiedList.csv').then((r) => r.text())
         rows.forEach((row, i) => {
             const cols = row.split('...').map((col) => col.replace(/"/g, ''));
             cols.forEach(( text, j ) => {
-                if ( text.indexOf( '/* failed to decorate' ) > -1 ) {
+                if ( text.indexOf( '/* failed to decorate' ) > -1 || text.indexOf( ':root' ) > -1 ) {
                     return;
                 }
                 if (i > 0) {
