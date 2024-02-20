@@ -44,7 +44,7 @@ const matches = {
     '\.cs1-visible-error.': '\.cs1-visible-error',
     'div.mw-references-wrap': 'div.mw-references-wrap',
     '(\.ext-discussiontools-init-replylink-buttons|\.ext-discussiontools-init-section-bar|\.autocomment|\.ext-discussiontools-init-timestamplink)': 'color-subtle (T357699)',
-    '\.(autres-projets|\.tpl-sisproj|.sistersitebox)': 'Other projects template (.autres-projets or .tpl-sisproj or .sistersitebox) [[phab:TBC]]'
+    '\.(autres-projets|\.tpl-sisproj|.sistersitebox)': 'Other projects template (.autres-projets or .tpl-sisproj or .sistersitebox) [[phab:T358016]]'
 }
 
 const generalizeSelector = (text) => {
@@ -66,38 +66,38 @@ const generalizeSelector = (text) => {
     }
 
     if ( text.match( /\[style\].*\.reference > a/ ) ) {
-        return 'Reference link inside element with [style] styling [[phab:TBC]]';
+        return 'Reference link inside element with [style] styling [[phab:T358000]]';
     } else if ( text.match( /\.alternance/ ) ) {
-        return '.alternance [[phab:TBC]]';
+        return '.alternance [[phab:T358003]]';
     } else if ( text.match( /table\.sidebar/ ) ) {
-        return 'table.sidebar template [[phab:TBC]]';
+        return 'table.sidebar template [[phab:T358004]]';
     // e.g. https://en.wikipedia.org/wiki/Portal%3ACurrent_events
     } else if ( text.match( /\.(current-events-sidebar)/ ) ) {
-        return 'current-events-sidebar (portal pages) [[phab:TBC]]';
+        return 'current-events-sidebar (portal pages) [[phab:T358005]]';
     // e.g. https://en.wikipedia.org/wiki/Pakistan
     } else if ( text.match( /\.(quotebox)/ ) ) {
         return '.quotebox [[phab:T357735]]';
     } else if ( text.match( /\.(bandeau-container)/ ) ) {
-        return '.bandeau-container [[phab:TBC]]';
+        return '.bandeau-container [[phab:T358007]]';
     } else if ( text.match( /id='mp-/ ) ) {
-        return 'main page template issue [phab:TBC]';
+        return 'main page template issue [phab:T358010]';
     } else if ( text.match( /\.(infobox|infobox_v2)/ ) ) {
         return 'infobox related issue [[phab:T357453]]';
     } else if ( text.match( /\.(navbox-even|navbox-abovebelow|navbox-title)/ ) ) {
-        return 'navbox related issue [phab:TBC]';
+        return 'navbox related issue [phab:T358012]';
     } else if ( text.match( /table[^\ ]*\[style\]/ ) ) {
         return 'Table with style attribute [[phab:T357585]]'
     } else if ( text.match( /[#=]CITEREF/ ) ) {
-        return '#CITEREF* [[phab:TBC]]';
+        return '#CITEREF* [[phab:T358013]]';
     } else if ( text.match( /sup.ext-phonos-attribution.noexcerpt.navigation-not-searchable > a/ ) ) {
         // Phonos false positive
         return '';
     } else if ( text.match( /\.colonnes/ ) ) {
-        return '.colonnes.liste-simple [[phab:TBC]]';
+        return '.colonnes.liste-simple [[phab:T358014]]';
     } else if ( text.match( /a\.mw-redirect/ ) ) {
-        return 'a.mw-redirect [[phab:TBC]]';
+        return 'a.mw-redirect [[phab:T358015]]';
     } else if ( text.match( /(table|\.wikitable)/ ) ) {
-        return 'Undiagnosed table issue table or .wikitable [[phab:TBC]]';
+        return 'Undiagnosed table issue table or .wikitable [[phab:T357998]]';
     } else if ( text.match( /(noprint|\.external|cite\.citation|\.nowrap|span\.ouvrage > span\.italique|\.reference-accessdate|small\.cachelinks)/ ) ) {
         // these are false positives and do not impact dark mode.
         return '';
