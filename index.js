@@ -10,7 +10,7 @@ async function main( options ) {
 		// Run accessibility checks and generate reports
 		await runAccessibilityChecksForURLs( options.project,
 			options.query, options.mobile, options.source, options.limit,
-			parseInt( options.sleepDuration, 10 ),
+			parseInt( options.zleep, 10 ),
 			options.alpha
 		);
 
@@ -49,7 +49,7 @@ const limitOpt = [
 ];
 
 const sleepOpt = [
-	'-s, --sleep <duration>',
+	'-z, --zleep <duration>',
 	'Default: 5000',
 	'5000'
 ];
