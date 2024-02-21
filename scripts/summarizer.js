@@ -9,7 +9,7 @@ const createParagraph = (text) => {
 };
 const makeColumn = (text, tagName) => {
     let colNode = document.createElement(tagName||'td');
-    colNode.textContent = text;
+    colNode.innerHTML = text;
     return colNode;
 };
 
@@ -142,7 +142,7 @@ fetch('simplifiedList.csv').then((r) => r.text())
             const row = document.createElement('tr');
             const number = selectors[selector];
             row.appendChild(
-                makeColumn( selector )
+                makeColumn( selector.replace(/\[\[phab:(.*)\]\]/, '<a href="https://phabricator.wikimedia.org/$1">$1</a>' ) )
             );
             row.appendChild(
                 makeColumn( number )
