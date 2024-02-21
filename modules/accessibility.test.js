@@ -21,12 +21,15 @@ async function newPage( browser, url ) {
 }
 
 // Function to run accessibility check on a given URL
-async function runAccessibilityCheck( browser, url ) {
+async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 	let page;
 	try {
 		page = await newPage( browser, url );
 		// Inject axe-core script into the page
 		await page.evaluate( axeCore.source );
+		if ( stylesheet ) {
+			await page.addStyleTag({url: stylesheet})
+		}
 
 		// Run axe on the page
 		const results = await page.evaluate( () => axe.run() );
@@ -80,7 +83,7 @@ function sleep( time ) {
 	} );
 }
 
-async function runAccessibilityChecksForURLs( project, query, mobile, source, limit, sleepDuration = 5000 ) {
+async function runAccessibilityChecksForURLs( project, query, mobile, source, limit, sleepDuration = 5000, addBetaClusterStyles = false ) {
 	const testCases = await createTestCases( { project, query, mobile, source, limit } );
 
 	// Run accessibility checks for each URL concurrently
@@ -93,7 +96,11 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 		await sleep( sleepDuration * i );
 		try {
 			console.log(`Run accessibility check ${i} on ${testCase.url}`);
-			return await runAccessibilityCheck( browser, testCase.url );
+			let styleUrl = null;
+			if ( addBetaClusterStyles && mobile ) {
+				styleUrl = 'https://en.wikipedia.beta.wmflabs.org/w/load.php?modules=skins.minerva.base.styles&only=styles';
+			}
+			return await runAccessibilityCheck( browser, testCase.url, styleUrl );
 		} catch ( e ) {
 			console.log( `Failed to run accessibility check on ${test.url}` );
 			return Promise.resolve( null );
