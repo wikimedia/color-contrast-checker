@@ -57,7 +57,7 @@ const matches = {
     '\\.portalbox': '.portalbox',
     '\\.portal-bar-content': '.portal-bar-content',
     '\.BarChartTemplate': '.BarChartTemplate',
-    '(div\.MainPageBG\.mp-box|\\.main-page-|\.main-wrapper|\.main-top|\.mp-|h2\.mp-h2|div\.mp-box|h1 \> \\[id\\=\'Welcome_to_Wikipedia)': 'Issue with main page (div.MainPageBG.mp-box) [[phab:T356344]] [[phab:T358010]]',
+    '(div\.MainPageBG\.mp-box|\\.main-page-|\.main-wrapper|\.main-top|\.mp-|h2\.mp-h2|div\.mp-box|h1 \> \\[id\\=\'Welcome_to_Wikipedia)': 'Issue with main page (div.MainPageBG.mp-box) [[phab:T358010]]',
     '\.track-listing': '\.track-listing [[phab:T357730]]',
     '\.side-box': '\.side-box [[phab:T357726]]',
     '\.cs1-visible-error.': '\.cs1-visible-error',
@@ -142,7 +142,7 @@ fetch('simplifiedList.csv').then((r) => r.text())
             const row = document.createElement('tr');
             const number = selectors[selector];
             row.appendChild(
-                makeColumn( selector.replace(/\[\[phab:(.*)\]\]/, '<a href="https://phabricator.wikimedia.org/$1">$1</a>' ) )
+                makeColumn( selector.replace(/\[\[phab:(.*)\]\]$/g, '<a href="https://phabricator.wikimedia.org/$1">$1</a>' ) )
             );
             row.appendChild(
                 makeColumn( number )
