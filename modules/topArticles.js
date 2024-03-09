@@ -74,16 +74,17 @@ async function randomPages( project, limit ) {
  * @returns 
  */
 const getPages = ( source, project, limit ) => {
-	console.log( `Obtaining pages from ${source}` );
 	switch ( source ) {
 		case 'random':
 			return randomPages( project, limit );
 		case 'static':
 			const examples = require( './examples.json' );
 			const STATIC_TEST_SET = ( examples[ project ] || [] ).map(
-				( example ) => Object.assign( {}, example, {
-					project: `https://${project}.org`
-				} )
+				( example ) => {
+					return Object.assign( {}, example, {
+						project: example.project || `https://${project}.org`
+					} );
+				}
 			);
 			return Promise.resolve( STATIC_TEST_SET );
 		default:

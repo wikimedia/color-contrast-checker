@@ -1,10 +1,1100 @@
 {
-    "en.wikipedia": [
-        {
-            "article": "81st_Golden_Globe_Awards"
-        },
-        {
-            "article": "Saltburn_(film)"
-        }
-    ]
+	"*": [
+		{
+			"article": "Paris",
+			"project": "https://id.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://ace.wikipedia.org"
+		},
+		{
+			"article": "Parys",
+			"project": "https://af.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://als.wikipedia.org"
+		},
+		{
+			"article": "Pariisi",
+			"project": "https://smn.wikipedia.org"
+		},
+		{
+			"article": "París",
+			"project": "https://an.wikipedia.org"
+		},
+		{
+			"article": "Parij",
+			"project": "https://roa-rup.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://frp.wikipedia.org"
+		},
+		{
+			"article": "París",
+			"project": "https://ast.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://atj.wikipedia.org"
+		},
+		{
+			"article": "Parĩ",
+			"project": "https://gn.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://ay.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://az.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://ms.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://bm.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://ban.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://bcl.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://bi.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://bar.wikipedia.org"
+		},
+		{
+			"article": "Pariz",
+			"project": "https://bs.wikipedia.org"
+		},
+		{
+			"article": "Pariz",
+			"project": "https://br.wikipedia.org"
+		},
+		{
+			"article": "Pa-lí",
+			"project": "https://zh-min-nan.wikipedia.org"
+		},
+		{
+			"article": "París",
+			"project": "https://ca.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://ceb.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://ch.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://cbk-zam.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://ny.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://sn.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://tum.wikipedia.org"
+		},
+		{
+			"article": "Parighji",
+			"project": "https://co.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://cy.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://dag.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://da.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://se.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://pdc.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://de.wikipedia.org"
+		},
+		{
+			"article": "Wótʼááh_Yíʼáhí",
+			"project": "https://nv.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://dsb.wikipedia.org"
+		},
+		{
+			"article": "Pariis",
+			"project": "https://et.wikipedia.org"
+		},
+		{
+			"article": "Parì",
+			"project": "https://eml.wikipedia.org"
+		},
+		{
+			"article": "París",
+			"project": "https://es.wikipedia.org"
+		},
+		{
+			"article": "Parizo",
+			"project": "https://eo.wikipedia.org"
+		},
+		{
+			"article": "París",
+			"project": "https://ext.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://eu.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://ee.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://hif.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://fr.wikipedia.org"
+		},
+		{
+			"article": "Parys",
+			"project": "https://fy.wikipedia.org"
+		},
+		{
+			"article": "Pari",
+			"project": "https://ff.wikipedia.org"
+		},
+		{
+			"article": "Parîs",
+			"project": "https://fur.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://fo.wikipedia.org"
+		},
+		{
+			"article": "Páras",
+			"project": "https://ga.wikipedia.org"
+		},
+		{
+			"article": "Paarys",
+			"project": "https://gv.wikipedia.org"
+		},
+		{
+			"article": "Parisi",
+			"project": "https://sm.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://gag.wikipedia.org"
+		},
+		{
+			"article": "París",
+			"project": "https://gl.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://guw.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://gd.wikipedia.org"
+		},
+		{
+			"article": "Faris",
+			"project": "https://ha.wikipedia.org"
+		},
+		{
+			"article": "Palika",
+			"project": "https://haw.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://hsb.wikipedia.org"
+		},
+		{
+			"article": "Pariz",
+			"project": "https://hr.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://io.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://rw.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://rn.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://ilo.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://ia.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://ie.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://xh.wikipedia.org"
+		},
+		{
+			"article": "IParisi",
+			"project": "https://zu.wikipedia.org"
+		},
+		{
+			"article": "Parigi",
+			"project": "https://it.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://jv.wikipedia.org"
+		},
+		{
+			"article": "Paarii",
+			"project": "https://kbp.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://kl.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://pam.wikipedia.org"
+		},
+		{
+			"article": "Pariz",
+			"project": "https://csb.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://kw.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://sw.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://kg.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://avk.wikipedia.org"
+		},
+		{
+			"article": "Pari",
+			"project": "https://ht.wikipedia.org"
+		},
+		{
+			"article": "Pari",
+			"project": "https://gcr.wikipedia.org"
+		},
+		{
+			"article": "Parîs",
+			"project": "https://ku.wikipedia.org"
+		},
+		{
+			"article": "paris",
+			"project": "https://jbo.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://lld.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://lad.wikipedia.org"
+		},
+		{
+			"article": "Pariža",
+			"project": "https://ltg.wikipedia.org"
+		},
+		{
+			"article": "Lutetia",
+			"project": "https://la.wikipedia.org"
+		},
+		{
+			"article": "Parīze",
+			"project": "https://lv.wikipedia.org"
+		},
+		{
+			"article": "Palesi",
+			"project": "https://to.wikipedia.org"
+		},
+		{
+			"article": "Paryžius",
+			"project": "https://lt.wikipedia.org"
+		},
+		{
+			"article": "Pariggi",
+			"project": "https://lij.wikipedia.org"
+		},
+		{
+			"article": "Paries",
+			"project": "https://li.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://lfn.wikipedia.org"
+		},
+		{
+			"article": "Pari",
+			"project": "https://ln.wikipedia.org"
+		},
+		{
+			"article": "Pariižu",
+			"project": "https://olo.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://lmo.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://lg.wikipedia.org"
+		},
+		{
+			"article": "Paräis",
+			"project": "https://lb.wikipedia.org"
+		},
+		{
+			"article": "Párizs",
+			"project": "https://hu.wikipedia.org"
+		},
+		{
+			"article": "Parisy",
+			"project": "https://mg.wikipedia.org"
+		},
+		{
+			"article": "Pariġi",
+			"project": "https://mt.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://min.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://mwl.wikipedia.org"
+		},
+		{
+			"article": "Parī",
+			"project": "https://mi.wikipedia.org"
+		},
+		{
+			"article": "Parigge",
+			"project": "https://nap.wikipedia.org"
+		},
+		{
+			"article": "Parijs",
+			"project": "https://nl.wikipedia.org"
+		},
+		{
+			"article": "Paries",
+			"project": "https://nds-nl.wikipedia.org"
+		},
+		{
+			"article": "Pariis",
+			"project": "https://frr.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://pih.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://no.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://nn.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://nrm.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://nov.wikipedia.org"
+		},
+		{
+			"article": "París_(França)",
+			"project": "https://oc.wikipedia.org"
+		},
+		{
+			"article": "Paaris",
+			"project": "https://om.wikipedia.org"
+		},
+		{
+			"article": "Parij",
+			"project": "https://uz.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://pap.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://jam.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://pcd.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://pms.wikipedia.org"
+		},
+		{
+			"article": "paris",
+			"project": "https://pwn.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://nds.wikipedia.org"
+		},
+		{
+			"article": "Paryż",
+			"project": "https://pl.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://pt.wikipedia.org"
+		},
+		{
+			"article": "Parij",
+			"project": "https://kaa.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://crh.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://ty.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://rmy.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://ro.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://rm.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://qu.wikipedia.org"
+		},
+		{
+			"article": "Parigi",
+			"project": "https://sc.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://sco.wikipedia.org"
+		},
+		{
+			"article": "Paris_(Stääd)",
+			"project": "https://stq.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://st.wikipedia.org"
+		},
+		{
+			"article": "Parisi",
+			"project": "https://sq.wikipedia.org"
+		},
+		{
+			"article": "Pariggi",
+			"project": "https://scn.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://simple.wikipedia.org"
+		},
+		{
+			"article": "Paríž",
+			"project": "https://sk.wikipedia.org"
+		},
+		{
+			"article": "Pariz",
+			"project": "https://sl.wikipedia.org"
+		},
+		{
+			"article": "Baariis",
+			"project": "https://so.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://srn.wikipedia.org"
+		},
+		{
+			"article": "Pariz",
+			"project": "https://sh.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://su.wikipedia.org"
+		},
+		{
+			"article": "Pariisi",
+			"project": "https://fi.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://sv.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://sg.wikipedia.org"
+		},
+		{
+			"article": "Bariz",
+			"project": "https://shi.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://tl.wikipedia.org"
+		},
+		{
+			"article": "Paris_(Fransa)",
+			"project": "https://kab.wikipedia.org"
+		},
+		{
+			"article": "Parigge",
+			"project": "https://roa-tara.wikipedia.org"
+		},
+		{
+			"article": "París",
+			"project": "https://tet.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://vi.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://tpi.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://tly.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://chy.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://tw.wikipedia.org"
+		},
+		{
+			"article": "Pari̱t",
+			"project": "https://kcg.wikipedia.org"
+		},
+		{
+			"article": "Pariž",
+			"project": "https://tk.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://tr.wikipedia.org"
+		},
+		{
+			"article": "Bahliz",
+			"project": "https://za.wikipedia.org"
+		},
+		{
+			"article": "Pariž",
+			"project": "https://vep.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://vo.wikipedia.org"
+		},
+		{
+			"article": "Parize",
+			"project": "https://vec.wikipedia.org"
+		},
+		{
+			"article": "Pariis",
+			"project": "https://fiu-vro.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://wa.wikipedia.org"
+		},
+		{
+			"article": "Parys",
+			"project": "https://vls.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://war.wikipedia.org"
+		},
+		{
+			"article": "Pari",
+			"project": "https://wo.wikipedia.org"
+		},
+		{
+			"article": "Parisi",
+			"project": "https://yo.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://diq.wikipedia.org"
+		},
+		{
+			"article": "Paries",
+			"project": "https://zea.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://ang.wikipedia.org"
+		},
+		{
+			"article": "París",
+			"project": "https://is.wikipedia.org"
+		},
+		{
+			"article": "Paříž",
+			"project": "https://cs.wikipedia.org"
+		},
+		{
+			"article": "Paryż",
+			"project": "https://szl.wikipedia.org"
+		},
+		{
+			"article": "Parīžios",
+			"project": "https://bat-smg.wikipedia.org"
+		},
+		{
+			"article": "Παρίσι",
+			"project": "https://el.wikipedia.org"
+		},
+		{
+			"article": "Παρίσι",
+			"project": "https://pnt.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://av.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://ady.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://kbd.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://ba.wikipedia.org"
+		},
+		{
+			"article": "Парыж",
+			"project": "https://be.wikipedia.org"
+		},
+		{
+			"article": "Парыж",
+			"project": "https://be-tarask.wikipedia.org"
+		},
+		{
+			"article": "Парис",
+			"project": "https://bxr.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://bg.wikipedia.org"
+		},
+		{
+			"article": "Параж",
+			"project": "https://inh.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://os.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://kv.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://krc.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://ky.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://mrj.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://lez.wikipedia.org"
+		},
+		{
+			"article": "Париз",
+			"project": "https://mk.wikipedia.org"
+		},
+		{
+			"article": "Париз",
+			"project": "https://mdf.wikipedia.org"
+		},
+		{
+			"article": "Парис",
+			"project": "https://mn.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://ce.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://mhr.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://koi.wikipedia.org"
+		},
+		{
+			"article": "Паріж",
+			"project": "https://rue.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://ru.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://sah.wikipedia.org"
+		},
+		{
+			"article": "Парижь",
+			"project": "https://cu.wikipedia.org"
+		},
+		{
+			"article": "Париз",
+			"project": "https://sr.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://tt.wikipedia.org"
+		},
+		{
+			"article": "Порис",
+			"project": "https://tg.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://tyv.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://udm.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://uk.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://cv.wikipedia.org"
+		},
+		{
+			"article": "Париж_ош",
+			"project": "https://myv.wikipedia.org"
+		},
+		{
+			"article": "Париж",
+			"project": "https://kk.wikipedia.org"
+		},
+		{
+			"article": "Փարիզ",
+			"project": "https://hyw.wikipedia.org"
+		},
+		{
+			"article": "Փարիզ",
+			"project": "https://hy.wikipedia.org"
+		},
+		{
+			"article": "פאריז",
+			"project": "https://yi.wikipedia.org"
+		},
+		{
+			"article": "פריז",
+			"project": "https://he.wikipedia.org"
+		},
+		{
+			"article": "پارىژ",
+			"project": "https://ug.wikipedia.org"
+		},
+		{
+			"article": "پیرس",
+			"project": "https://ur.wikipedia.org"
+		},
+		{
+			"article": "باريز",
+			"project": "https://ary.wikipedia.org"
+		},
+		{
+			"article": "باريس",
+			"project": "https://ar.wikipedia.org"
+		},
+		{
+			"article": "پاریس",
+			"project": "https://azb.wikipedia.org"
+		},
+		{
+			"article": "پيرس",
+			"project": "https://sd.wikipedia.org"
+		},
+		{
+			"article": "پاریس",
+			"project": "https://fa.wikipedia.org"
+		},
+		{
+			"article": "پاریس",
+			"project": "https://mzn.wikipedia.org"
+		},
+		{
+			"article": "باريس",
+			"project": "https://arz.wikipedia.org"
+		},
+		{
+			"article": "پیرس",
+			"project": "https://pnb.wikipedia.org"
+		},
+		{
+			"article": "پاریس",
+			"project": "https://ps.wikipedia.org"
+		},
+		{
+			"article": "پاریس",
+			"project": "https://ckb.wikipedia.org"
+		},
+		{
+			"article": "پاريس",
+			"project": "https://glk.wikipedia.org"
+		},
+		{
+			"article": "ܦܐܪܝܣ",
+			"project": "https://arc.wikipedia.org"
+		},
+		{
+			"article": "पेरिस",
+			"project": "https://anp.wikipedia.org"
+		},
+		{
+			"article": "पेरीस",
+			"project": "https://awa.wikipedia.org"
+		},
+		{
+			"article": "Paris",
+			"project": "https://gom.wikipedia.org"
+		},
+		{
+			"article": "पेरिस",
+			"project": "https://dty.wikipedia.org"
+		},
+		{
+			"article": "पेरिस",
+			"project": "https://new.wikipedia.org"
+		},
+		{
+			"article": "पेरिस",
+			"project": "https://ne.wikipedia.org"
+		},
+		{
+			"article": "पैरिस",
+			"project": "https://bh.wikipedia.org"
+		},
+		{
+			"article": "पॅरिस",
+			"project": "https://mr.wikipedia.org"
+		},
+		{
+			"article": "पेरिस",
+			"project": "https://mai.wikipedia.org"
+		},
+		{
+			"article": "पेरिस",
+			"project": "https://hi.wikipedia.org"
+		},
+		{
+			"article": "পেৰিছ",
+			"project": "https://as.wikipedia.org"
+		},
+		{
+			"article": "প্যারিস",
+			"project": "https://bn.wikipedia.org"
+		},
+		{
+			"article": "ਪੈਰਿਸ",
+			"project": "https://pa.wikipedia.org"
+		},
+		{
+			"article": "પેરિસ",
+			"project": "https://gu.wikipedia.org"
+		},
+		{
+			"article": "ପ୍ୟାରିସ",
+			"project": "https://or.wikipedia.org"
+		},
+		{
+			"article": "பாரிசு",
+			"project": "https://ta.wikipedia.org"
+		},
+		{
+			"article": "పారిస్",
+			"project": "https://te.wikipedia.org"
+		},
+		{
+			"article": "ಪ್ಯಾರಿಸ್",
+			"project": "https://kn.wikipedia.org"
+		},
+		{
+			"article": "പാരിസ്",
+			"project": "https://ml.wikipedia.org"
+		},
+		{
+			"article": "පැරිස්",
+			"project": "https://si.wikipedia.org"
+		},
+		{
+			"article": "ปารีส",
+			"project": "https://th.wikipedia.org"
+		},
+		{
+			"article": "ປາຣີ",
+			"project": "https://lo.wikipedia.org"
+		},
+		{
+			"article": "ཕ་རི།",
+			"project": "https://bo.wikipedia.org"
+		},
+		{
+			"article": "ပါရီမြို့",
+			"project": "https://my.wikipedia.org"
+		},
+		{
+			"article": "პარიზი",
+			"project": "https://xmf.wikipedia.org"
+		},
+		{
+			"article": "პარიზი",
+			"project": "https://ka.wikipedia.org"
+		},
+		{
+			"article": "ፓሪስ",
+			"project": "https://am.wikipedia.org"
+		},
+		{
+			"article": "ប៉ារីស",
+			"project": "https://km.wikipedia.org"
+		},
+		{
+			"article": "ᱯᱮᱨᱤᱥ",
+			"project": "https://sat.wikipedia.org"
+		},
+		{
+			"article": "ⴱⴰⵔⵉⵣ",
+			"project": "https://zgh.wikipedia.org"
+		},
+		{
+			"article": "巴黎",
+			"project": "https://zh.wikipedia.org"
+		},
+		{
+			"article": "巴黎",
+			"project": "https://wuu.wikipedia.org"
+		},
+		{
+			"article": "Pâ-lì",
+			"project": "https://hak.wikipedia.org"
+		},
+		{
+			"article": "巴黎",
+			"project": "https://zh-classical.wikipedia.org"
+		},
+		{
+			"article": "パリ",
+			"project": "https://ja.wikipedia.org"
+		},
+		{
+			"article": "巴黎",
+			"project": "https://zh-yue.wikipedia.org"
+		},
+		{
+			"article": "巴黎",
+			"project": "https://gan.wikipedia.org"
+		},
+		{
+			"article": "Bă-là̤",
+			"project": "https://cdo.wikipedia.org"
+		},
+		{
+			"article": "파리_(프랑스)",
+			"project": "https://ko.wikipedia.org"
+		},
+		{
+			"article": "𐍀𐌰𐍂𐌹𐍃",
+			"project": "https://got.wikipedia.org"
+		}
+	],
+	"en.wikipedia.org": [
+		{
+			"article": "81st_Golden_Globe_Awards"
+		},
+		{
+			"article": "Saltburn_(film)"
+		}
+	]
 }
