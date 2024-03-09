@@ -9,7 +9,7 @@ const createParagraph = (text) => {
 };
 const makeColumn = (text, tagName) => {
     let colNode = document.createElement(tagName||'td');
-    colNode.textContent = text;
+    colNode.innerHTML = text;
     return colNode;
 };
 
@@ -55,9 +55,9 @@ const matches = {
     '\\.hp-kop': '.hp-kop',
     '\\.VT.rellink': '.VT.rellink',
     '\\.portalbox': '.portalbox',
-    '\\.portal-bar-content': '.portal-bar-content',
+    '\\.(portal-bar-content|portal-bar)': '.portal-bar /.portal-bar-content',
     '\.BarChartTemplate': '.BarChartTemplate',
-    '(div\.MainPageBG\.mp-box|\\.main-page-|\.main-wrapper|\.main-top|\.mp-|h2\.mp-h2|div\.mp-box|h1 \> \\[id\\=\'Welcome_to_Wikipedia)': 'Issue with main page (div.MainPageBG.mp-box) [[phab:T356344]] [[phab:T358010]]',
+    '(div\.MainPageBG\.mp-box|\\.main-page-|\.main-wrapper|\.main-top|\.mp-|h2\.mp-h2|div\.mp-box|h1 \> \\[id\\=\'Welcome_to_Wikipedia)': 'Issue with main page (div.MainPageBG.mp-box) [[phab:T358010]]',
     '\.track-listing': '\.track-listing [[phab:T357730]]',
     '\.side-box': '\.side-box [[phab:T357726]]',
     '\.cs1-visible-error.': '\.cs1-visible-error',
@@ -70,6 +70,7 @@ const matches = {
     'div.mw-references-wrap': 'div.mw-references-wrap',
     '.mw-kartographer-maplink': '.mw-kartographer-maplink',
     '\.listing-metadata': '.listing-metadata',
+    '\\.sister-bar': '.sister-bar',
     'current-events-sidebar': 'current-events-sidebar (portal pages) [[phab:T358005]]',
     '\\.colonnes': '.colonnes.liste-simple [[phab:T358014]]',
     '\\.bandeau-container':'.bandeau-container [[phab:T358007]]',
@@ -84,7 +85,7 @@ const matches = {
     'table.wikitable.plainrowheaders': 'table.wikitable.plainrowheaders',
     'table.wikitable.football-squad': 'table.wikitable.football-squad',
     '(\.ext-discussiontools-init-replylink-buttons|\.ext-discussiontools-init-section-bar|\.autocomment|\.ext-discussiontools-init-timestamplink)': 'color-subtle (T357699)',
-    '\.(autres-projets|\.tpl-sisproj|.sistersitebox)': 'Other projects template (.autres-projets or .tpl-sisproj or .sistersitebox) [[phab:T358016]]',
+    '\\.(autres-projets|tpl-sisproj|sistersitebox|sisterproject)': 'Other projects template (.autres-projets or .tpl-sisproj or .sistersitebox) [[phab:T358016]]',
     'table\\[^ \\]*\\[style\\]': 'Table with style attribute [[phab:T357585]]',
     '\\[style\\]': 'Inline style',
     '\\.modified-enhancement': '.modified-enhancement (last modified bar)'
@@ -142,7 +143,7 @@ fetch('simplifiedList.csv').then((r) => r.text())
             const row = document.createElement('tr');
             const number = selectors[selector];
             row.appendChild(
-                makeColumn( selector )
+                makeColumn( selector.replace(/\[\[phab:(.*)\]\]$/g, '<a href="https://phabricator.wikimedia.org/$1">$1</a>' ) )
             );
             row.appendChild(
                 makeColumn( number )
