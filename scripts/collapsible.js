@@ -8,6 +8,9 @@ document.addEventListener( "DOMContentLoaded", function () {
 
         // Toggle visibility of table when h2 is clicked
         h2.addEventListener( "click", function () {
+            if ( ev.target.nodeName === 'A' ) {
+                return;
+            }
             if ( table.style.display === "none" ) {
                 table.style.display = "table";
             } else {
