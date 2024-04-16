@@ -1,6 +1,7 @@
 // Required modules
 const puppeteer = require( 'puppeteer' );
 const axeCore = require( 'axe-core' );
+const specialPagesObject = require( './specialPagesList' );
 const { createTestCases } = require( './topArticles' );
 const { writeSimplifiedListToCSV } = require( './csvWriter' );
 const { generateHTMLPage } = require( './htmlGenerator' );
@@ -84,8 +85,9 @@ function sleep( time ) {
 }
 
 async function runAccessibilityChecksForURLs( project, query, mobile, source, limit, sleepDuration = 5000, addBetaClusterStyles = false ) {
-	const testCases = await createTestCases( { project, query, mobile, source, limit } );
-
+	// const testCases = await createTestCases( { project, query, mobile, source, limit } );
+	// TODO: Make this a parameter
+	const testCases = await specialPagesObject;
 	// Run accessibility checks for each URL concurrently
 	const browser = await puppeteer.launch( {
 		args: ['--no-sandbox'],
