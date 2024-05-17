@@ -29,13 +29,26 @@ Color Contrast Tester
 * Run the tests using the following command:
 
 ```
-node index.js
+node index.js --project en.wikipedia
 ```
 
 ### Advanced
+
+Run against mobile:
 ```
-node index.js --project fr.wikipedia --query "minervanightmode=1"
+node index.js --project fr.wikipedia --mobile --query "minervanightmode=1"
 ```
+
+Run against mobile against 10 random  articles with sleep duration of 0s.
+```
+node index.js --project fr.wikipedia --mobile --query "minervanightmode=1" --source random -z 0 --limit 10
+```
+
+Run against desktop night theme against 100 random articles.
+```
+node index.js --project fr.wikipedia --query "useskin=vector-2022&vectornightmode=1" --source random --limit 100
+```
+
 
 ### Important Note
 This tool is currently in development and should be used cautiously. Stay tuned for updates and improvements!
