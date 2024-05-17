@@ -88,8 +88,15 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 
 	// Run accessibility checks for each URL concurrently
 	const browser = await puppeteer.launch( {
-		args: ['--no-sandbox'],
-		timeout: 60000
+		args: [
+			'--no-sandbox',
+			'--disable-gpu',
+			'--headless',
+			'--disable-dev-shm-usage',
+			'--disable-extensions',
+			'--disable-plugins'
+		],
+		timeout: sleepDuration
 	} );
 	const accessibilityChecks = testCases.map( async ( testCase, i ) => {
 		// queue a query every 5s.
