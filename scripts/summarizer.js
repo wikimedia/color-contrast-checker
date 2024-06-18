@@ -100,7 +100,8 @@ const generalizeSelector = (text) => {
     return text;
 };
 
-fetch('simplifiedList.csv').then((r) => r.text())
+const csv = location.pathname.split('/').slice(-1)[0].replace( '.html', '.csv');
+fetch(csv).then((r) => r.text())
     .then((text) => {
         const rows = text.split('\n');
         const selectors = {};

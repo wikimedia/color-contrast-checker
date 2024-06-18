@@ -7,7 +7,7 @@ function escapeHTML( text ) {
 	return text.replace( /</g, '&lt;' ).replace( />/g, '&gt;' );
 }
 
-function generateHTMLPage( simplifiedLists, noColorContrastViolationCount, colorContrastViolationCount, pagesScanned ) {
+function generateHTMLPage( file, simplifiedLists, noColorContrastViolationCount, colorContrastViolationCount, pagesScanned ) {
 	try {
 		// Read the template file.
 		const templatePath = path.join( __dirname, '../views/template.mustache' );
@@ -75,7 +75,7 @@ function generateHTMLPage( simplifiedLists, noColorContrastViolationCount, color
 		}
 
 		// Write the generated HTML to the specified path.
-		const outputPath = path.join( outputDir, 'index.html' );
+		const outputPath = path.join( outputDir, `${file}.html` );
 		fs.writeFileSync( outputPath, htmlContent );
 
 		console.log( `HTML page generated successfully at ${outputPath}` );

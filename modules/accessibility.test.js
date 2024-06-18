@@ -11,6 +11,8 @@ const decorateSelector = require( './decorateSelector' );
 // Counters and variables
 let noColorContrastViolationCount = 0;
 let colorContrastViolationCount = 0;
+let noColorContrastViolationCountDark = 0;
+let colorContrastViolationCountDark = 0;
 let pagesScanned = 0;
 
 
@@ -30,11 +32,13 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 		if ( stylesheet ) {
 			await page.addStyleTag({url: stylesheet})
 		}
+	} catch ( e ) {
+		console.error( e );
+	}
 
+	const checkContrast = async ( type ) => {
 		// Run axe on the page
 		const results = await page.evaluate( () => axe.run() );
-
-		pagesScanned++;
 
 		// Filter violations based on id
 		const colorContrastViolation = results.violations.find(
@@ -43,9 +47,7 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 
 		// Log the specific violation or null if not found
 		if ( colorContrastViolation ) {
-			console.error( `Color contrast violation found on ${url}` );
-			colorContrastViolationCount++;
-
+			console.error( `Color contrast violation found on ${url} (${type}).` );
 			const anotherPage = await newPage( browser, url );
 			// Array to store nodeDetails
 			const nodeDetailsArray = await Promise.all(
@@ -61,18 +63,39 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 			// Return the array of nodeDetails if it exists
 			return nodeDetailsArray.length > 0 ? nodeDetailsArray : null;
 		} else {
-			console.log( `No color contrast violation found on ${url}.` );
-			noColorContrastViolationCount++;
+			console.log( `No color contrast violation found on ${url} (${type}).` );
+			return false;
 		}
-
-		// Return the specific violation or null if not found
-		return colorContrastViolation || null;
+	};
+	let result = [];
+	try {
+		pagesScanned++;
+		console.log('Checking standard theme...');
+		const day = await checkContrast( 'default' );
+		if ( day === false ) {
+			noColorContrastViolationCount++;
+		} else {
+			colorContrastViolationCount++;
+		}
+		await page.evaluate( () => {
+			document.documentElement.classList.remove( 'skin-theme-clientpref-day', 'skin-theme-clientpref--excluded' );
+			document.documentElement.classList.add('skin-theme-clientpref-night')
+		} );
+		console.log('Checking dark theme...');
+		const night = await checkContrast( 'dark' );
+		if ( night === false ) {
+			noColorContrastViolationCountDark++;
+		} else {
+			colorContrastViolationCountDark++;
+		}
+		result = [ day, night ];
 	} catch ( e ) {
 		console.error( e );
 	}
 	if ( page ) {
 		page.close();
 	}
+	return result;
 }
 
 function sleep( time ) {
@@ -110,54 +133,67 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 			return await runAccessibilityCheck( browser, testCase.url, styleUrl );
 		} catch ( e ) {
 			console.log( `Failed to run accessibility check on ${test.url}` );
-			return Promise.resolve( null );
+			return Promise.resolve( [ null, null ] );
 		}
 	} );
 
 	// Wait for all checks to complete
-	const results = await Promise.all( accessibilityChecks );
+	const allResults = await Promise.all( accessibilityChecks );
 	browser.close();
 
-	// Handle the results (each result corresponds to one URL)
-	const allSimplifiedLists = [];
-	// First filter out failed runs then loop through the successful ones.
-	results.forEach( ( result, index ) => {
-		const testCase = testCases[index];
-		if ( result ) {
-			const simplifiedList = result.map( node => ( {
-				selector: node.selector,
-				context: node.context,
-				pageUrl: testCase.url,
-				title: testCase.title,
-			} ) );
+	const writeColorContrastReport = ( file, a, b, results, queryOverride = '' ) => {
+		// Handle the results (each result corresponds to one URL)
+		const allSimplifiedLists = [];
+		// First filter out failed runs then loop through the successful ones.
+		( results || [] ).forEach( ( result, index ) => {
+			const testCase = testCases[index];
+			if ( result ) {
+				const simplifiedList = result.map( node => ( {
+					selector: node.selector,
+					context: node.context,
+					pageUrl: `${testCase.url}${queryOverride ? `?${queryOverride}` : ''}`,
+					title: testCase.title,
+				} ) );
 
-			console.log( `Result for URL ${testCase.url}:`, {
-				simplifiedList,
-				colorContrastErrorNum: simplifiedList ? simplifiedList.length : 0,
-			} );
+				console.log( `Result for URL ${testCase.article}:`, {
+					simplifiedList,
+					colorContrastErrorNum: simplifiedList ? simplifiedList.length : 0,
+				} );
 
-			allSimplifiedLists.push( simplifiedList );
-		} else {
-			console.log( `No result for URL ${testCase.url}` );
-		}
-	} );
-
-	// Generating HTML table
-	const htmlTable = generateHTMLPage(
-		allSimplifiedLists.flat(),
+				allSimplifiedLists.push( simplifiedList );
+			}
+		} );
+		const filePath = path.join( __dirname, `../report/${file}.html` );
+		// Generating HTML table
+		const htmlTable = generateHTMLPage(
+			file,
+			allSimplifiedLists.flat(),
+			a,
+			b,
+			pagesScanned
+		);
+		// Writing HTML table to a file
+		fs.writeFileSync( filePath, htmlTable );
+		// Writing to CSV using the function from csvWriter.js
+		writeSimplifiedListToCSV( allSimplifiedLists, `${file}.csv` );
+	};
+	writeColorContrastReport(
+		'light',
 		noColorContrastViolationCount,
 		colorContrastViolationCount,
-		pagesScanned
+		allResults.map( ( a ) => a[ 0 ] ),
+		query ? '' : ''
+	);
+	writeColorContrastReport(
+		'night',
+		noColorContrastViolationCountDark,
+		colorContrastViolationCountDark,
+		allResults.map( ( a ) => a[ 1 ] ),
+		query ? '' : 'vectornightmode=1&minervanightmode=1'
 	);
 
-	// Writing HTML table to a file
-	const filePath = path.join( __dirname, '../report/index.html' );
-	fs.writeFileSync( filePath, htmlTable );
 	fs.copyFileSync( 'scripts/collapsible.js', 'report/collapsible.js' );
 	fs.copyFileSync( 'scripts/summarizer.js', 'report/summarizer.js' );
-
-	// Writing to CSV using the function from csvWriter.js
-	writeSimplifiedListToCSV( allSimplifiedLists );
 }
 
 // Export the function
