@@ -28,7 +28,7 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 		// Inject axe-core script into the page
 		await page.evaluate( axeCore.source );
 		if ( stylesheet ) {
-			await page.addStyleTag({url: stylesheet})
+			await page.addStyleTag( { url: stylesheet } );
 		}
 
 		// Run axe on the page
@@ -86,6 +86,8 @@ function sleep( time ) {
 async function runAccessibilityChecksForURLs( project, query, mobile, source, limit, sleepDuration = 5000, addBetaClusterStyles = false ) {
 	const testCases = await createTestCases( { project, query, mobile, source, limit } );
 
+	console.log( `Fetched ${testCases.length} test cases` );
+
 	// Run accessibility checks for each URL concurrently
 	const browser = await puppeteer.launch( {
 		args: [
@@ -102,14 +104,14 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 		// queue a query every 5s.
 		await sleep( sleepDuration * i );
 		try {
-			console.log(`Run accessibility check ${i} on ${testCase.url}`);
+			console.log( `Run accessibility check ${i} on ${testCase.url}` );
 			let styleUrl = null;
 			if ( addBetaClusterStyles && mobile ) {
 				styleUrl = 'https://en.wikipedia.beta.wmflabs.org/w/load.php?modules=skins.minerva.base.styles&only=styles';
 			}
 			return await runAccessibilityCheck( browser, testCase.url, styleUrl );
 		} catch ( e ) {
-			console.log( `Failed to run accessibility check on ${test.url}` );
+			console.log( `Failed to run accessibility check on ${testCase.url}` );
 			return Promise.resolve( null );
 		}
 	} );
@@ -158,6 +160,10 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 
 	// Writing to CSV using the function from csvWriter.js
 	writeSimplifiedListToCSV( allSimplifiedLists );
+
+	// Log the total error count
+	console.log( `Total color contrast violations: ${colorContrastViolationCount}` );
+	console.log( `Total pages scanned: ${pagesScanned}` );
 }
 
 // Export the function

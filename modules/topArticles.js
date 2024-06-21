@@ -24,27 +24,37 @@ oneDayAgo.setDate( oneDayAgo.getDate() - 2 );
 
 // Retrieve the top Wikipedia articles using the Wikimedia API.
 async function getTopWikipediaArticles( project, limit = 1 ) {
-	const endpoint = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${project}/all-access/${getFormattedDate( oneDayAgo )}`;
+	const articles = [];
+	let remaining = limit;
+	let offset = 0;
 
-	try {
-		const response = await fetch( endpoint );
+	while ( remaining > 0 ) {
+		const batchSize = remaining > 500 ? 500 : remaining;
+		const endpoint = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${project}/all-access/${getFormattedDate( oneDayAgo )}?limit=${batchSize}&offset=${offset}`;
 
-		if ( response.ok ) {
-			const data = await response.json();
-			const articles = data.items[0].articles.slice( 0, limit );
-			return articles.map( ( a ) => Object.assign( {}, a, {
-				project: `https://${project}.org`
-			} ) );
-		} else {
+		try {
+			const response = await fetch( endpoint );
+
+			if ( response.ok ) {
+				const data = await response.json();
+				const batchArticles = data.items[0].articles.slice( 0, batchSize );
+				articles.push( ...batchArticles );
+				remaining -= batchSize;
+				offset += batchSize;
+			} else {
+				console.error( `Error: ${response.status}` );
+				break;
+			}
+		} catch ( error ) {
+
 			// eslint-disable-next-line no-console
-			console.error( `Error: ${response.status}` );
-			return null;
+			console.error( 'Error:', error );
+			break;
 		}
-	} catch ( error ) {
-		// eslint-disable-next-line no-console
-		console.error( 'Error:', error );
-		return null;
 	}
+	return articles.map( a => Object.assign( {}, a, {
+		project: `https://${project}.org`
+	} ) );
 }
 
 async function randomPages( project, limit ) {
@@ -55,11 +65,11 @@ async function randomPages( project, limit ) {
 
 		if ( response.ok ) {
 			return response.json().then( ( r ) => {
-				return r.query.random.map(( page ) => ( {
+				return r.query.random.map( ( page ) => ( {
 					article: page.title,
 					project: `https://${project}.org`
 				} ) );
-			});
+			} );
 		}
 	} catch ( error ) {
 		return null;
@@ -128,7 +138,7 @@ async function createTestCases( options = {
 		let host = article.project.replace( /https:\/\/([^\.]*)\.wiki/, 'https://$1.wiki' );
 		if ( mobile ) {
 			if ( host.indexOf( 'www.' ) > -1 ) {
-				host = host.replace ( 'www.', 'm.' );
+				host = host.replace( 'www.', 'm.' );
 			} else {
 				host = host.replace( /https:\/\/([^\.]*)\.wiki/, 'https://$1.m.wiki' );
 			}
@@ -141,5 +151,5 @@ async function createTestCases( options = {
 	return testCases;
 }
 
-// createTestCases();
+// Export the function
 module.exports = { createTestCases };

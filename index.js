@@ -7,6 +7,10 @@ const { runAccessibilityChecksForURLs } = require( './modules/accessibility.test
 // Main function to run the application
 async function main( options ) {
 	try {
+		console.log( `Starting accessibility checks for project: ${options.project}` );
+		console.log( `Query: ${options.query}` );
+		console.log( `Limit: ${options.limit}` );
+
 		// Run accessibility checks and generate reports
 		await runAccessibilityChecksForURLs( options.project,
 			options.query, options.mobile, options.source, options.limit,
@@ -70,6 +74,7 @@ program
 	.option( ...alphaOpt )
 	.requiredOption( ...projectOpt )
 	.action( async ( opts ) => {
-		main( opts );
+		await main( opts );  // Use await here to ensure main completes before proceeding
 	} );
+
 program.parse();
