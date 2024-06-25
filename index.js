@@ -38,7 +38,7 @@ const mobileOpt = [
 
 const sourceOpt = [
 	'-s, --source <query>',
-	'Either "random" or "pageviews"',
+	'Either "random", "static" or "pageviews"',
 	'pageviews'
 ];
 
