@@ -25,6 +25,10 @@ async function newPage( browser, url ) {
 // Function to run accessibility check on a given URL
 async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 	let page;
+	const pending = setInterval(() => {
+		console.log(`Still checking contrast on ${url}`);
+	}, 5000);
+
 	try {
 		page = await newPage( browser, url );
 		// Inject axe-core script into the page
@@ -38,8 +42,11 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 
 	const checkContrast = async ( type ) => {
 		// Run axe on the page
-		const results = await page.evaluate( () => axe.run() );
-
+		const results = await page.evaluate( () => {
+			axe.cleanup();
+			return axe.run();
+		} );
+		console.error( `Axe ran successfully.` );
 		// Filter violations based on id
 		const colorContrastViolation = results.violations.find(
 			violation => violation.id === 'color-contrast'
@@ -47,12 +54,17 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 
 		// Log the specific violation or null if not found
 		if ( colorContrastViolation ) {
-			console.error( `Color contrast violation found on ${url} (${type}).` );
 			const anotherPage = await newPage( browser, url );
 			// Array to store nodeDetails
 			const nodeDetailsArray = await Promise.all(
 				colorContrastViolation.nodes.map( async ( node ) => {
-					const selector = await decorateSelector( anotherPage, node.target.join( ', ' ) );
+					let selector = node.target.join( ', ' );
+					try {
+						selector = await decorateSelector( anotherPage, selector );
+					} catch ( e ) {
+						// pass
+						console.log('(Error decorating selector)')
+					}
 					return {
 						context: node.html,
 						selector
@@ -60,9 +72,12 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 				} )
 			);
 
+			clearTimeout( pending );
+			console.error( `Color contrast violation found on ${url} (${type}).` );
 			// Return the array of nodeDetails if it exists
 			return nodeDetailsArray.length > 0 ? nodeDetailsArray : null;
 		} else {
+			clearTimeout( pending );
 			console.log( `No color contrast violation found on ${url} (${type}).` );
 			return false;
 		}
@@ -70,7 +85,7 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 	let result = [];
 	try {
 		pagesScanned++;
-		console.log('Checking standard theme...');
+		console.log(`Checking standard theme...${pagesScanned}`);
 		const day = await checkContrast( 'default' );
 		if ( day === false ) {
 			noColorContrastViolationCount++;
@@ -81,13 +96,14 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 			document.documentElement.classList.remove( 'skin-theme-clientpref-day', 'skin-theme-clientpref--excluded' );
 			document.documentElement.classList.add('skin-theme-clientpref-night')
 		} );
-		console.log('Checking dark theme...');
+		console.log(`Checking dark theme...${pagesScanned}`);
 		const night = await checkContrast( 'dark' );
 		if ( night === false ) {
 			noColorContrastViolationCountDark++;
 		} else {
 			colorContrastViolationCountDark++;
 		}
+		console.log(`Finished.`);
 		result = [ day, night ];
 	} catch ( e ) {
 		console.error( e );
@@ -137,6 +153,7 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 		}
 	} );
 
+	console.log('Compiling results...');
 	// Wait for all checks to complete
 	const allResults = await Promise.all( accessibilityChecks );
 	browser.close();
@@ -177,6 +194,8 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 		// Writing to CSV using the function from csvWriter.js
 		writeSimplifiedListToCSV( allSimplifiedLists, `${file}.csv` );
 	};
+
+	console.log('Writing report 1...');
 	writeColorContrastReport(
 		'light',
 		noColorContrastViolationCount,
@@ -184,6 +203,7 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 		allResults.map( ( a ) => a[ 0 ] ),
 		query ? '' : ''
 	);
+	console.log('Writing report 2...');
 	writeColorContrastReport(
 		'night',
 		noColorContrastViolationCountDark,
@@ -191,7 +211,7 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 		allResults.map( ( a ) => a[ 1 ] ),
 		query ? '' : 'vectornightmode=1&minervanightmode=1'
 	);
-
+	console.log('Copy remaining files.');
 	fs.copyFileSync( 'scripts/collapsible.js', 'report/collapsible.js' );
 	fs.copyFileSync( 'scripts/summarizer.js', 'report/summarizer.js' );
 }
