@@ -175,7 +175,8 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 				const simplifiedList = result.map( node => ( {
 					selector: node.selector,
 					context: node.context,
-					pageUrl: `${testCase.url}${queryOverride ? `?${queryOverride}` : ''}`,
+					// Drop querystring from domain in favor of override.
+					pageUrl: `${testCase.url.split('?')[0].replace('.m.', '.')}${queryOverride}`,
 					title: testCase.title,
 				} ) );
 
@@ -208,7 +209,7 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 		noColorContrastViolationCount,
 		colorContrastViolationCount,
 		allResults.map( ( a ) => a[ 0 ] ),
-		query ? '' : ''
+		''
 	);
 	console.log('Writing report 2...');
 	writeColorContrastReport(
@@ -216,7 +217,7 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 		noColorContrastViolationCountDark,
 		colorContrastViolationCountDark,
 		allResults.map( ( a ) => a[ 1 ] ),
-		query ? '' : 'vectornightmode=1&minervanightmode=1'
+		'?vectornightmode=1&minervanightmode=1'
 	);
 	console.log('Copy remaining files.');
 	fs.copyFileSync( 'scripts/collapsible.js', 'report/collapsible.js' );
