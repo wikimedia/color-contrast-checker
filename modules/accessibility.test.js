@@ -42,11 +42,18 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 
 	const checkContrast = async ( type ) => {
 		// Run axe on the page
+		console.time('Total Axe run time: ');
 		const results = await page.evaluate( () => {
 			axe.cleanup();
-			return axe.run();
+			return axe.run( {
+				runOnly: {
+					type: 'rule',
+					values: ['color-contrast']
+				}
+			} );
 		} );
 		console.error( `Axe ran successfully.` );
+		console.timeEnd('Total Axe run time: ');
 		// Filter violations based on id
 		const colorContrastViolation = results.violations.find(
 			violation => violation.id === 'color-contrast'
