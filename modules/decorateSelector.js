@@ -37,16 +37,17 @@ module.exports = async ( page, selector ) => {
 			}
 			let j = selector.length - 1;
 			while ( node && node.id !== 'mw-content-text' && node.nodeType !== 9 ) {
-				const newSelector = ( node.getAttribute( 'class' ) || '' ).split( ' ' ).join( '.' );
+				const className = node.getAttribute( 'class' );
+				const newSelector = className ? `.${className.split( ' ' ).join( '.' )}` : '';
 				const hasStyle = node.hasAttribute( 'style' );
 				const hasBgColor = node.hasAttribute( 'bgcolor' );
 				const hasColorStyle = !!( hasStyle && node.getAttribute( 'style' ).match(/(color|background|border)/g) );
 				if ( j > -1 ) {
-					selector[j] = injectClass( selector[j], `.${newSelector}`, hasColorStyle, hasBgColor );
+					selector[j] = injectClass( selector[j], newSelector, hasColorStyle, hasBgColor );
 				}
 				if ( j < 0 ) {
 					selector.unshift(
-						injectClass( node.tagName.toLowerCase(), newSelector ? `.${newSelector}` : '', hasColorStyle, hasBgColor )
+						injectClass( node.tagName.toLowerCase(), newSelector, hasColorStyle, hasBgColor )
 					);
 				}
 				j--;

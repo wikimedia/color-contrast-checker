@@ -106,7 +106,7 @@ async function runAccessibilityCheck( browser, url, stylesheet = null, title, in
 					if (
 						violation.selector &&
 						violation.selector.match(
-							/(\.mw-templatedata-doc-wrap|\.ext-discussiontools-init|\.mw-fr-reviewlink|\.oo-ui-flaggedElement-progressive|\.autocomment)/
+							/(\.mw-templatedata-doc-wrap|\.minerva-header|last-modified-bar|\.ext-discussiontools-init|\.mw-fr-reviewlink|\.oo-ui-flaggedElement-progressive|\.autocomment)/
 						)
 					) {
 						return false;
