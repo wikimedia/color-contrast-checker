@@ -6,6 +6,7 @@ const { runAccessibilityChecksForURLs } = require( './modules/accessibility.test
 
 // Main function to run the application
 async function main( options ) {
+	console.time( 'Application ran successfully.' );
 	try {
 		// Run accessibility checks and generate reports
 		await runAccessibilityChecksForURLs( options.project,
@@ -14,7 +15,7 @@ async function main( options ) {
 			options.alpha
 		);
 
-		console.log( 'Application ran successfully.' );
+		console.timeEnd( 'Application ran successfully.' );
 	} catch ( error ) {
 		console.error( 'An error occurred:', error );
 	}
