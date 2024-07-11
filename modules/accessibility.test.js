@@ -26,7 +26,7 @@ async function newPage( browser, url ) {
 async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 	let page;
 	const pending = setInterval(() => {
-		console.log(`Still checking contrast on ${url}`);
+		console.log(`	⏳ Still checking contrast on ${url}`);
 	}, 5000);
 
 	try {
@@ -42,7 +42,7 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 
 	const checkContrast = async ( type ) => {
 		// Run axe on the page
-		console.time('Total Axe run time: ');
+		console.time('	Axe ran successfully:');
 		const results = await page.evaluate( () => {
 			axe.cleanup();
 			return axe.run( {
@@ -52,8 +52,7 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 				}
 			} );
 		} );
-		console.error( `Axe ran successfully.` );
-		console.timeEnd('Total Axe run time: ');
+		console.timeEnd('	Axe ran successfully:');
 		// Filter violations based on id
 		const colorContrastViolation = results.violations.find(
 			violation => violation.id === 'color-contrast'
@@ -80,19 +79,19 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 			);
 
 			clearTimeout( pending );
-			console.error( `Color contrast violation found on ${url} (${type}).` );
+			console.error( `	✖️ Color contrast violation found on ${url} (${type}).` );
 			// Return the array of nodeDetails if it exists
 			return nodeDetailsArray.length > 0 ? nodeDetailsArray : null;
 		} else {
 			clearTimeout( pending );
-			console.log( `No color contrast violation found on ${url} (${type}).` );
+			console.log( `	\x1b[32m✔️ No color contrast violation found on ${url} (${type}).\x1b[0m` );
 			return false;
 		}
 	};
 	let result = [];
 	try {
 		pagesScanned++;
-		console.log(`Checking standard theme...${pagesScanned}`);
+		console.log(`	🌞 Checking standard theme...${pagesScanned}`);
 		const day = await checkContrast( 'default' );
 		if ( day === false ) {
 			noColorContrastViolationCount++;
@@ -103,7 +102,7 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 			document.documentElement.classList.remove( 'skin-theme-clientpref-day', 'skin-theme-clientpref--excluded' );
 			document.documentElement.classList.add('skin-theme-clientpref-night')
 		} );
-		console.log(`Checking dark theme...${pagesScanned}`);
+		console.log(`	🌚 Checking dark theme...${pagesScanned}`);
 		const night = await checkContrast( 'dark' );
 		if ( night === false ) {
 			noColorContrastViolationCountDark++;
@@ -180,7 +179,7 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 					title: testCase.title,
 				} ) );
 
-				console.log( `Result for URL ${testCase.article}:`, {
+				console.log( `Result for URL ${testCase.title}:`, {
 					simplifiedList,
 					colorContrastErrorNum: simplifiedList ? simplifiedList.length : 0,
 				} );
