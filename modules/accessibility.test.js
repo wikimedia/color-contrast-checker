@@ -23,7 +23,7 @@ async function newPage( browser, url ) {
 }
 
 // Function to run accessibility check on a given URL
-async function runAccessibilityCheck( browser, url, stylesheet = null ) {
+async function runAccessibilityCheck( browser, url, stylesheet = null, title, includeScreenshots ) {
 	let page;
 	const pending = setInterval(() => {
 		console.log(`	⏳ Still checking contrast on ${url}`);
@@ -40,9 +40,9 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 		console.error( e );
 	}
 
-	const checkContrast = async ( type ) => {
+	const checkContrast = async ( type, title ) => {
 		// Run axe on the page
-		console.time('	Axe ran successfully:');
+		console.time(`	Axe ran successfully for page ${title}:`);
 		const results = await page.evaluate( () => {
 			axe.cleanup();
 			return axe.run( {
@@ -52,7 +52,7 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 				}
 			} );
 		} );
-		console.timeEnd('	Axe ran successfully:');
+		console.timeEnd(`	Axe ran successfully for page ${title}:`);
 		// Filter violations based on id
 		const colorContrastViolation = results.violations.find(
 			violation => violation.id === 'color-contrast'
@@ -61,6 +61,29 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 		// Log the specific violation or null if not found
 		if ( colorContrastViolation ) {
 			const anotherPage = await newPage( browser, url );
+			if ( includeScreenshots ) {
+				const urlObject = new URL( url );
+				const screenshotBasePath = path.join( __dirname, '../report/screenshots/', urlObject.host, type );
+
+				if (!fs.existsSync(screenshotBasePath)){
+					fs.mkdirSync(screenshotBasePath, { recursive: true } );
+				}
+
+				for ( const node of colorContrastViolation.nodes ) {
+					const index = colorContrastViolation.nodes.indexOf( node );
+					const screenshotFilename = title + '-' + index + '.png';
+					const screenshotFilePath = path.join( screenshotBasePath, screenshotFilename );
+					try {
+						const element = await page.$( node.target[0] );
+						await element.screenshot( { path: screenshotFilePath } );
+						await page.screenshot( {  fullPage: true, path:  path.join( screenshotBasePath, title + '.png' ) } );
+						colorContrastViolation.nodes[ index ].screenshot = path.relative ( __dirname, screenshotFilePath );
+					} catch( err ) {
+						console.error( `	📸 Error creating screenshot. ${screenshotFilePath}` );
+					}
+				}
+			}
+
 			// Array to store nodeDetails
 			const nodeDetailsArray = await Promise.all(
 				colorContrastViolation.nodes.map( async ( node ) => {
@@ -73,7 +96,11 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 					}
 					return {
 						context: node.html,
-						selector
+						selector,
+						title: title,
+						type: type,
+						failureSummary: node.failureSummary,
+						screenshot: ( node.screenshot ) ? node.screenshot.replace( '../report/', '') : null
 					};
 				} ).filter( ( violation ) => {
 					if (
@@ -103,7 +130,7 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 	try {
 		pagesScanned++;
 		console.log(`	🌞 Checking standard theme...${pagesScanned}`);
-		const day = await checkContrast( 'default' );
+		const day = await checkContrast( 'default', title );
 		if ( day === false ) {
 			noColorContrastViolationCount++;
 		} else {
@@ -114,7 +141,7 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 			document.documentElement.classList.add('skin-theme-clientpref-night')
 		} );
 		console.log(`	🌚 Checking dark theme...${pagesScanned}`);
-		const night = await checkContrast( 'dark' );
+		const night = await checkContrast( 'dark', title );
 		if ( night === false ) {
 			noColorContrastViolationCountDark++;
 		} else {
@@ -139,7 +166,7 @@ function sleep( time ) {
 	} );
 }
 
-async function runAccessibilityChecksForURLs( project, query, mobile, source, limit, sleepDuration = 5000, addBetaClusterStyles = false ) {
+async function runAccessibilityChecksForURLs( project, query, mobile, source, limit, sleepDuration = 5000, addBetaClusterStyles = false, includeScreenshots = false ) {
 	const testCases = await createTestCases( { project, query, mobile, source, limit } );
 
 	// Run accessibility checks for each URL concurrently
@@ -163,7 +190,7 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 			if ( addBetaClusterStyles && mobile ) {
 				styleUrl = 'https://en.wikipedia.beta.wmflabs.org/w/load.php?modules=skins.minerva.base.styles&only=styles';
 			}
-			return await runAccessibilityCheck( browser, testCase.url, styleUrl );
+			return await runAccessibilityCheck( browser, testCase.url, styleUrl, testCase.title, includeScreenshots );
 		} catch ( e ) {
 			console.log( `Failed to run accessibility check on ${test.url}` );
 			return Promise.resolve( [ null, null ] );
@@ -185,9 +212,11 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 				const simplifiedList = result.map( node => ( {
 					selector: node.selector,
 					context: node.context,
-					// Drop querystring from domain in favor of override.
-					pageUrl: `${testCase.url.split('?')[0].replace('.m.', '.')}${queryOverride}`,
+					pageUrl: `${testCase.url}${queryOverride}`,
 					title: testCase.title,
+					type: node.type,
+					screenshot: node.screenshot,
+					message: node.failureSummary
 				} ) );
 
 				console.log( `Result for URL ${testCase.title}:`, {
@@ -205,7 +234,8 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 			allSimplifiedLists.flat(),
 			a,
 			b,
-			pagesScanned
+			pagesScanned,
+			includeScreenshots
 		);
 		// Writing HTML table to a file
 		fs.writeFileSync( filePath, htmlTable );
