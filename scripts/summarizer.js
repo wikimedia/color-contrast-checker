@@ -14,11 +14,22 @@ const makeColumn = (text, tagName) => {
 };
 
 const matches = {
-    '\\.wikitable.*\\[style\\]': 'wikitable[style]',
-    '\\.thumbcaption.*\\[style\\]': 'thumbcaption[style]',
-    '\\.thumb.*\\[style\\]': 'thumb with [style]',
+    '\\.description\\[lang': '.description[lang]',
+    '\\.ext-discussiontools-init-replylink-buttons': 'ext-discussiontools-init-replylink-buttons',
+    '\\.ext-discussiontools-init-timestamplink': 'ext-discussiontools-init-timestamplink [[phab:T369667]]',
+    '\\.restrictiontemplate': '.restrictiontemplate',
+    'blockquote\\.templatequote': 'blockquote.templatequote',
+    '\\.fileinfotpl-type-information': 'fileinfotpl-type-information',
+    '\\.txikipedia-handfont': 'txikipedia-handfont',
+    '(\\.responsive-license-cc|\\.rlicense-text)': '.responsive-license-cc or .rlicense-text',
+    '\\.hezkuntza_ikasleak': 'hezkuntza_ikasleak',
+    'div\\.nounderlines': 'div.nounderlines',
     '\\.keyboard-key': '.keyboard-key',
+    '\\.txikipedia-izenburua': 'txikipedia-izenburua',
     '\\.mw-gallery-packed': '.mw-gallery-packed [[phab:T368353]]',
+    "\\.ores-wp10-prediction": ".ores-wp10-prediction",
+    '\\.multicol': '.multicol',
+    '\\.modified-enhancement': '.modified-enhancement (last modified bar)',
     '\\.wikidata-snak': '.wikidata-snak',
     '\\.mw-templatedata-doc-wrap': '.mw-templatedata-doc-wrap',
     '\.main-box': '.main-box',
@@ -93,12 +104,14 @@ const matches = {
     '\\.(navbox-even|navbox|navbox-abovebelow|navbox-title)': 'navbox related issue [[phab:T358012]]',
     'table.wikitable.plainrowheaders': 'table.wikitable.plainrowheaders',
     'table.wikitable.football-squad': 'table.wikitable.football-squad',
+    '\\.wikitable.*\\[style\\]': 'wikitable[style]',
+    '\\.thumbcaption.*\\[style\\]': 'thumbcaption[style]',
+    '\\.thumb.*\\[style\\]': 'thumb with [style]',
     '\\.(autres-projets|tpl-sisproj|sistersitebox|sisterproject)': 'Other projects template (.autres-projets or .tpl-sisproj or .sistersitebox) [[phab:T358016]]',
     'table\\[^ \\]*\\[style\\]': 'Table with style attribute [[phab:T357585]]',
     'table.*\\[style\\]': 'Table with style attribute [[phab:T357585]]',
-    'div.noprint[style]': 'Div with style attribute [[phab:T357585]]',
-    '\\.multicol': '.multicol',
-    '\\.modified-enhancement': '.modified-enhancement (last modified bar)'
+    "span.*\\[style]": "span with [style]",
+    'div.noprint[style]': 'Div with style attribute [[phab:T357585]]'
 }
 
 const generalizeSelector = (text) => {
