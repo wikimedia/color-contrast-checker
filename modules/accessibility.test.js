@@ -97,6 +97,7 @@ async function runAccessibilityCheck( browser, url, stylesheet = null, title ) {
 						selector,
 						title: title,
 						type: type,
+						failureSummary: node.failureSummary,
 						screenshot: ( node.screenshot ) ? node.screenshot.replace( '../report/', '') : null
 					};
 				} )
@@ -198,11 +199,11 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 				const simplifiedList = result.map( node => ( {
 					selector: node.selector,
 					context: node.context,
-					// Drop querystring from domain in favor of override.
-					pageUrl: `${testCase.url.split('?')[0].replace('.m.', '.')}${queryOverride}`,
+					pageUrl: `${testCase.url}${queryOverride}`,
 					title: testCase.title,
 					type: node.type,
-					screenshot: node.screenshot
+					screenshot: node.screenshot,
+					message: node.failureSummary
 				} ) );
 
 				console.log( `Result for URL ${testCase.title}:`, {
