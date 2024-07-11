@@ -7,7 +7,7 @@ function escapeHTML( text ) {
 	return text.replace( /</g, '&lt;' ).replace( />/g, '&gt;' );
 }
 
-function generateHTMLPage( file, simplifiedLists, noColorContrastViolationCount, colorContrastViolationCount, pagesScanned ) {
+function generateHTMLPage( file, simplifiedLists, noColorContrastViolationCount, colorContrastViolationCount, pagesScanned, includeScreenshots ) {
 	try {
 		// Read the template file.
 		const templatePath = path.join( __dirname, '../views/template.mustache' );
@@ -29,7 +29,7 @@ function generateHTMLPage( file, simplifiedLists, noColorContrastViolationCount,
 					<td><pre>${item.selector}</pre></td>
 					<td><pre>${escapeHTML( item.context )}</pre></td>
 					<td>${item.message}</td>
-					<td><img src="${item.screenshot}"/></td>
+					${ includeScreenshots ? `<td><img src="${item.screenshot}"/></td>` : '' }
 				</tr>
 			`).join( '' );
 			const totalItemsForPageUrl = groupedItems[pageUrl].length;
@@ -43,7 +43,7 @@ function generateHTMLPage( file, simplifiedLists, noColorContrastViolationCount,
 							<th>Selector</th>
 							<th>Context</th>
 							<th>Message</th>
-							<th>Screenshot</th>
+							${ includeScreenshots ? `<th>Screenshot</th>` : '' }
 						</tr>
 					</thead>
 					<tbody>

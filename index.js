@@ -12,7 +12,8 @@ async function main( options ) {
 		await runAccessibilityChecksForURLs( options.project,
 			options.query, options.mobile, options.source, options.limit,
 			parseInt( options.zleep, 10 ),
-			options.alpha
+			options.alpha,
+			options.includeScreenshots
 		);
 
 		console.timeEnd( 'Application ran successfully.' );
@@ -60,8 +61,13 @@ const alphaOpt = [
 	'Forces the addition of alpha styles from the beta cluster.'
 ];
 
+const screenshotOpt = [
+	'-s, --include-screenshots',
+	'Capture screenshots of errors and add them to the report.'
+];
+
 program
-	.description( 'Welcome to the pixel CLI to perform visual regression testing' )
+	.description( 'Welcome to the Night mode checker CLI to perform color contrast testing' )
 	.option( ...projectOpt )
 	.option( ...queryOpt )
 	.option( ...mobileOpt )
@@ -69,6 +75,7 @@ program
 	.option( ...limitOpt )
 	.option( ...sleepOpt )
 	.option( ...alphaOpt )
+	.option( ...screenshotOpt )
 	.requiredOption( ...projectOpt )
 	.action( async ( opts ) => {
 		main( opts );
