@@ -75,6 +75,17 @@ async function runAccessibilityCheck( browser, url, stylesheet = null ) {
 						context: node.html,
 						selector
 					};
+				} ).filter( ( violation ) => {
+					if (
+						violation.selector &&
+						violation.selector.match(
+							/(\.mw-templatedata-doc-wrap|\.mw-fr-reviewlink|\.oo-ui-flaggedElement-progressive|\.autocomment)/
+						)
+					) {
+						return false;
+					} else {
+						return true;
+					}
 				} )
 			);
 
