@@ -42,7 +42,7 @@ async function runAccessibilityCheck( browser, url, stylesheet = null, title, in
 
 	const checkContrast = async ( type, title ) => {
 		// Run axe on the page
-		console.time('	Axe ran successfully:');
+		console.time(`	Axe ran successfully for page ${title}:`);
 		const results = await page.evaluate( () => {
 			axe.cleanup();
 			return axe.run( {
@@ -52,7 +52,7 @@ async function runAccessibilityCheck( browser, url, stylesheet = null, title, in
 				}
 			} );
 		} );
-		console.timeEnd('	Axe ran successfully:');
+		console.timeEnd(`	Axe ran successfully for page ${title}:`);
 		// Filter violations based on id
 		const colorContrastViolation = results.violations.find(
 			violation => violation.id === 'color-contrast'
