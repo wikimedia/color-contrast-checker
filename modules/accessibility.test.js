@@ -212,7 +212,7 @@ async function runAccessibilityChecksForURLs( project, query, mobile, source, li
 				const simplifiedList = result.map( node => ( {
 					selector: node.selector,
 					context: node.context,
-					pageUrl: `${testCase.url}${queryOverride}`,
+					pageUrl: `${testCase.url.replace('.m.', '.')}${queryOverride}`,
 					title: testCase.title,
 					type: node.type,
 					screenshot: node.screenshot,
