@@ -14,12 +14,14 @@ const makeColumn = (text, tagName) => {
 };
 
 const matches = {
+    '\\.module-shortcutboxplain': 'module-shortcutboxplain',
     '\\.template-text-text': 'template-text-text',
     '\\.portal': '.portal',
     'cite\\.citation\\.web\\.cs1': 'cite.citation.web.cs1',
     '\\.reflist.references-column-count': '.reflist.references-column-count',
     '\\.location': '.location',
     '\\.vevent': '.vevent',
+    '\\.ombox': '.ombox',
     '\\.ratingstable': '.ratingstable',
     '\\.boilerplate': '.boilerplate',
     '\\.description\\[lang': '.description[lang]',

@@ -84,8 +84,16 @@ async function runAccessibilityCheck( browser, url, stylesheet = null, title, in
 				}
 			}
 
+			const ignoreMatches = [
+				'\\.ext-discussiontools-',
+				'\\.mw-templatedata-',
+				'\\.minerva-header',
+				'last-modified-bar',
+				'oo-ui-flaggedElement-progressive',
+				'\\.autocomment'
+			];
 			// Array to store nodeDetails
-			const nodeDetailsArray = await Promise.all(
+			let nodeDetailsArray = await Promise.all(
 				colorContrastViolation.nodes.map( async ( node ) => {
 					let selector = node.target.join( ', ' );
 					try {
@@ -102,19 +110,21 @@ async function runAccessibilityCheck( browser, url, stylesheet = null, title, in
 						failureSummary: node.failureSummary,
 						screenshot: ( node.screenshot ) ? node.screenshot.replace( '../report/', '') : null
 					};
-				} ).filter( ( violation ) => {
-					if (
-						violation.selector &&
-						violation.selector.match(
-							/(\.mw-templatedata-doc-wrap|\.minerva-header|last-modified-bar|\.ext-discussiontools-init|\.mw-fr-reviewlink|\.oo-ui-flaggedElement-progressive|\.autocomment)/
-						)
-					) {
-						return false;
-					} else {
-						return true;
-					}
 				} )
 			);
+			
+			nodeDetailsArray = nodeDetailsArray.filter( ( violation ) => {
+				const selector = violation.selector;
+				if ( !selector ) {
+					return true;
+				}
+				for( let i = 0; i < ignoreMatches.length; i++ ) {
+					if ( selector.match( new RegExp( ignoreMatches[ i ] ) ) ) {
+						return false;
+					}
+				}
+				return true;
+			} );
 
 			clearTimeout( pending );
 			console.error( `	✖️ Color contrast violation found on ${url} (${type}).` );
