@@ -87,6 +87,7 @@ async function runAccessibilityCheck( browser, url, stylesheet = null, title, in
 			const ignoreMatches = [
 				'\\.ext-discussiontools-',
 				'\\.mw-templatedata-',
+				'\\.mw-babel',
 				'\\.minerva-header',
 				'last-modified-bar',
 				'oo-ui-flaggedElement-progressive',
