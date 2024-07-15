@@ -91,7 +91,8 @@ async function runAccessibilityCheck( browser, url, stylesheet = null, title, in
 				'\\.minerva-header',
 				'last-modified-bar',
 				'oo-ui-flaggedElement-progressive',
-				'\\.autocomment'
+				'\\.autocomment',
+				'mw-gallery-packed',
 			];
 			// Array to store nodeDetails
 			let nodeDetailsArray = await Promise.all(
