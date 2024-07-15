@@ -85,6 +85,7 @@ async function runAccessibilityCheck( browser, url, stylesheet = null, title, in
 			}
 
 			const ignoreMatches = [
+				'\\.history-deleted',
 				'\\.ext-discussiontools-',
 				'\\.mw-templatedata-',
 				'\\.mw-babel',
