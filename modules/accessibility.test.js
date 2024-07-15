@@ -151,6 +151,10 @@ async function runAccessibilityCheck( browser, url, stylesheet = null, title, in
 		await page.evaluate( () => {
 			document.documentElement.classList.remove( 'skin-theme-clientpref-day', 'skin-theme-clientpref--excluded' );
 			document.documentElement.classList.add('skin-theme-clientpref-night')
+			// wait for 1.5s before checking dark theme so UI can update.
+			return new Promise( ( resolve ) => {
+				setTimeout( resolve, 1500 );
+			} );
 		} );
 		console.log(`	🌚 Checking dark theme...${pagesScanned}`);
 		const night = await checkContrast( 'dark', title );
