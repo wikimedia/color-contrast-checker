@@ -5,6 +5,14 @@
 			"project": "https://en.wikipedia.org"
 		}
 	],
+	"eo.wikipedia":  [
+		{
+			"article": "Vikipedio:Diskutejo"
+		  },
+		  {
+			"article": "Uzanto:Dominik"
+		  }
+	],
 	"fr.wikipedia": [
 		{
 			"article": "Élections_législatives_françaises_de_2024"
