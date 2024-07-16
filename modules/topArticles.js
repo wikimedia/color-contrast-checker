@@ -23,7 +23,7 @@ const oneDayAgo = new Date( currentDate );
 oneDayAgo.setDate( oneDayAgo.getDate() - 2 );
 
 // Retrieve the top Wikipedia articles using the Wikimedia API.
-async function getTopWikipediaArticles( project, limit = 1 ) {
+async function getTopWikipediaArticles( project, limit = 1, mainNSOnly = false ) {
 	const endpoint = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${project}/all-access/${getFormattedDate( oneDayAgo )}`;
 
 	try {
@@ -31,7 +31,8 @@ async function getTopWikipediaArticles( project, limit = 1 ) {
 
 		if ( response.ok ) {
 			const data = await response.json();
-			const articles = data.items[0].articles.slice( 0, limit );
+			const articles = data.items[0].articles
+				.filter( ( a ) => mainNSOnly ? a.article.indexOf( ':' ) === -1 : true ).slice( 0, limit );
 			return articles.map( ( a ) => Object.assign( {}, a, {
 				project: `https://${project}.org`
 			} ) );
@@ -71,9 +72,10 @@ async function randomPages( project, limit ) {
  * @param {string} source
  * @param {string} project
  * @param {number} limit
+ * @param {boolean} mainNSOnly
  * @returns 
  */
-const getPages = ( source, project, limit ) => {
+const getPages = ( source, project, limit, mainNSOnly ) => {
 	switch ( source ) {
 		case 'random':
 			return randomPages( project, limit );
@@ -88,7 +90,7 @@ const getPages = ( source, project, limit ) => {
 			);
 			return Promise.resolve( STATIC_TEST_SET );
 		default:
-			return getTopWikipediaArticles( project, limit );
+			return getTopWikipediaArticles( project, limit, mainNSOnly );
 
 	}
 }
@@ -113,7 +115,7 @@ async function createTestCases( options = {
 	const { project, mobile, source, limit } = options;
 	const topArticles = await Promise.all(
 		[
-			getPages( source, project, limit )
+			getPages( source, project, limit, source === 'pageviews-main' )
 		]
 	);
 
