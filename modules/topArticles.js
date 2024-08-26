@@ -1,3 +1,7 @@
+// Defines a list of articles which we know the color contrast checker fails on.
+const EXCLUDE_LIST = [
+	'Қазақстан_қазақтарының_ер_есімдерінің_тізімі'
+];
 const path = require( 'path' );
 const fetch = require( 'node-fetch' );
 
@@ -32,6 +36,7 @@ async function getTopWikipediaArticles( project, limit = 1, mainNSOnly = false )
 		if ( response.ok ) {
 			const data = await response.json();
 			const articles = data.items[0].articles
+				.filter( ( a ) => !EXCLUDE_LIST.includes( a.article ) )
 				.filter( ( a ) => mainNSOnly ? a.article.indexOf( ':' ) === -1 : true ).slice( 0, limit );
 			return articles.map( ( a ) => Object.assign( {}, a, {
 				project: `https://${project}.org`
