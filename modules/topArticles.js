@@ -53,8 +53,8 @@ async function getTopWikipediaArticles( project, limit = 1, mainNSOnly = false )
 	}
 }
 
-async function randomPages( project, limit ) {
-	const endpoint = `https://${project}.org/w/api.php?action=query&format=json&prop=&list=random&formatversion=2&rnnamespace=0&rnlimit=${limit}`;
+async function randomPages( project, limit, namespace = 0 ) {
+	const endpoint = `https://${project}.org/w/api.php?action=query&format=json&prop=&list=random&formatversion=2&rnnamespace=${namespace}&rnlimit=${limit}`;
 
 	try {
 		const response = await fetch( endpoint );
@@ -82,8 +82,10 @@ async function randomPages( project, limit ) {
  */
 const getPages = ( source, project, limit, mainNSOnly ) => {
 	switch ( source ) {
+		case 'random-files':
+			return randomPages( project, limit, 6 );
 		case 'random':
-			return randomPages( project, limit );
+			return randomPages( project, limit, 0 );
 		case 'static':
 			const examples = require( './examples.json' );
 			const STATIC_TEST_SET = ( examples[ project ] || [] ).map(
