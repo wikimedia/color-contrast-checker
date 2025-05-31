@@ -27,7 +27,7 @@ const oneDayAgo = new Date( currentDate );
 oneDayAgo.setDate( oneDayAgo.getDate() - 2 );
 
 // Retrieve the top Wikipedia articles using the Wikimedia API.
-async function getTopWikipediaArticles( project, limit = 1, mainNSOnly = false ) {
+async function getTopWikipediaArticles( project, first=0, limit = 1, mainNSOnly = false ) {
 	const endpoint = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${project}/all-access/${getFormattedDate( oneDayAgo )}`;
 
 	try {
@@ -37,7 +37,8 @@ async function getTopWikipediaArticles( project, limit = 1, mainNSOnly = false )
 			const data = await response.json();
 			const articles = data.items[0].articles
 				.filter( ( a ) => !EXCLUDE_LIST.includes( a.article ) )
-				.filter( ( a ) => mainNSOnly ? a.article.indexOf( ':' ) === -1 : true ).slice( 0, limit );
+				.filter( ( a ) => mainNSOnly ? a.article.indexOf( ':' ) === -1 : true ).slice( first, first+limit );
+			console.log("HERE",first, first+limit)
 			return articles.map( ( a ) => Object.assign( {}, a, {
 				project: `https://${project}.org`
 			} ) );
@@ -76,11 +77,12 @@ async function randomPages( project, limit, namespace = 0 ) {
  * 
  * @param {string} source
  * @param {string} project
+ * @param {number} first
  * @param {number} limit
  * @param {boolean} mainNSOnly
  * @returns 
  */
-const getPages = ( source, project, limit, mainNSOnly ) => {
+const getPages = ( source, project, first, limit, mainNSOnly ) => {
 	switch ( source ) {
 		case 'random-files':
 			return randomPages( project, limit, 6 );
@@ -97,7 +99,7 @@ const getPages = ( source, project, limit, mainNSOnly ) => {
 			);
 			return Promise.resolve( STATIC_TEST_SET );
 		default:
-			return getTopWikipediaArticles( project, limit, mainNSOnly );
+			return getTopWikipediaArticles( project, first, limit, mainNSOnly );
 
 	}
 }
@@ -109,6 +111,7 @@ const getPages = ( source, project, limit, mainNSOnly ) => {
  * @param {string} [options.query]
  * @param {string} [options.mobile]
  * @param {string} [options.source]
+ * @param {number} [options.first]
  * @param {number} [options.limit]
  * @return {array}
  */
@@ -117,12 +120,13 @@ async function createTestCases( options = {
 	project: 'en.wikipedia',
 	query: '',
 	source: 'pageviews',
+	first: 0,
 	limit: 100
 } ) {
-	const { project, mobile, source, limit } = options;
+	const { project, mobile, source, first, limit } = options;
 	const topArticles = await Promise.all(
 		[
-			getPages( source, project, limit, source === 'pageviews-main' )
+			getPages( source, project, first, limit, source === 'pageviews-main' )
 		]
 	);
 
