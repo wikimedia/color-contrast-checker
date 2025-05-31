@@ -10,7 +10,8 @@ async function main( options ) {
 	try {
 		// Run accessibility checks and generate reports
 		await runAccessibilityChecksForURLs( options.project,
-			options.query, options.mobile, options.source, options.limit,
+			options.query, options.mobile, options.source,
+			parseInt( options.first, 10 ), parseInt( options.limit, 10 ),
 			parseInt( options.zleep, 10 ),
 			options.alpha,
 			options.includeScreenshots
@@ -44,6 +45,11 @@ const sourceOpt = [
 	'pageviews'
 ];
 
+const firstOpt = [
+	'-f, --first <query>',
+	'Index of the last page for the subset of pages.'
+];
+
 const limitOpt = [
 	'-l, --limit <query>',
 	'Default: 100',
@@ -72,6 +78,7 @@ program
 	.option( ...queryOpt )
 	.option( ...mobileOpt )
 	.option( ...sourceOpt )
+	.option( ...firstOpt )
 	.option( ...limitOpt )
 	.option( ...sleepOpt )
 	.option( ...alphaOpt )
