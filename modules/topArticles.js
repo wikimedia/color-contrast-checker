@@ -38,7 +38,6 @@ async function getTopWikipediaArticles( project, first=0, limit = 1, mainNSOnly 
 			const articles = data.items[0].articles
 				.filter( ( a ) => !EXCLUDE_LIST.includes( a.article ) )
 				.filter( ( a ) => mainNSOnly ? a.article.indexOf( ':' ) === -1 : true ).slice( first, first+limit );
-			console.log("HERE",first, first+limit)
 			return articles.map( ( a ) => Object.assign( {}, a, {
 				project: `https://${project}.org`
 			} ) );
