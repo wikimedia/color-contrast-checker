@@ -183,8 +183,8 @@ function sleep( time ) {
 	} );
 }
 
-async function runAccessibilityChecksForURLs( project, query, mobile, source, limit, sleepDuration = 5000, addBetaClusterStyles = false, includeScreenshots = false ) {
-	const testCases = await createTestCases( { project, query, mobile, source, limit } );
+async function runAccessibilityChecksForURLs( project, query, mobile, source, first, limit, sleepDuration = 5000, addBetaClusterStyles = false, includeScreenshots = false ) {
+	const testCases = await createTestCases( { project, query, mobile, source, first, limit } );
 
 	// Run accessibility checks for each URL concurrently
 	const browser = await puppeteer.launch( {

@@ -55,5 +55,10 @@ The web team use the following query to decide whether a project is ready for da
 ```
 node index.js --project 'xx.projectname' -m --limit 500 --zleep 1500 --source pageviews-main
 ```
+#### Partial runs
+Sometimes the above process hangs. Try using partial runs with a longer delay. The following query will scan from top 100th to top 150th page, and sleep for 10 seconds before starting a new scan.
+```
+node index.js --project 'xx.projectname' -m --first 100 --limit 50 --zleep 10000 --source pageviews-main
+```
 ### Important Note
 This tool is currently in development and should be used cautiously. Stay tuned for updates and improvements!
