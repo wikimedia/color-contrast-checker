@@ -47,7 +47,8 @@ const sourceOpt = [
 
 const firstOpt = [
 	'-f, --first <query>',
-	'Index of the last page for the subset of pages.'
+	'Default: 0',
+	'0'
 ];
 
 const limitOpt = [
