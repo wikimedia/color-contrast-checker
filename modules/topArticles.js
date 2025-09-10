@@ -27,9 +27,9 @@ const oneDayAgo = new Date( currentDate );
 oneDayAgo.setDate( oneDayAgo.getDate() - 2 );
 
 // Retrieve the top Wikipedia articles using the Wikimedia API.
-async function getTopWikipediaArticles( project, first=0, limit = 1, mainNSOnly = false ) {
-	const endpoint = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${project}/all-access/${getFormattedDate( oneDayAgo )}`;
-
+async function getTopWikipediaArticles( project, first=0, limit = 100, mainNSOnly = false ) {
+	let p = project.endsWith('.org') ? project : `${project}.org`;
+	const endpoint = `https://wikimedia.org/api/rest_v1/metrics/pageviews/top/${p}/all-access/${getFormattedDate( oneDayAgo )}`;
 	try {
 		const response = await fetch( endpoint );
 
@@ -37,7 +37,8 @@ async function getTopWikipediaArticles( project, first=0, limit = 1, mainNSOnly 
 			const data = await response.json();
 			const articles = data.items[0].articles
 				.filter( ( a ) => !EXCLUDE_LIST.includes( a.article ) )
-				.filter( ( a ) => mainNSOnly ? a.article.indexOf( ':' ) === -1 : true ).slice( first, first+limit );
+				.filter( ( a ) => mainNSOnly ? a.article.indexOf( ':' ) === -1 : true )
+				.slice( first, first+limit );
 			return articles.map( ( a ) => Object.assign( {}, a, {
 				project: `https://${project}.org`
 			} ) );
