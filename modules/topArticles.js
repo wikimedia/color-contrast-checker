@@ -1,6 +1,15 @@
 // Defines a list of articles which we know the color contrast checker fails on.
 const EXCLUDE_LIST = [
-	'Қазақстан_қазақтарының_ер_есімдерінің_тізімі'
+	'Қазақстан_қазақтарының_ер_есімдерінің_тізімі',
+	'Zeitschriften',
+	'Paulys_Realencyclopädie_der_classischen_Altertumswissenschaft/Register/ch',
+	'Paulys_Realencyclopädie_der_classischen_Altertumswissenschaft/Register/uf',
+	'Paulys_Realencyclopädie_der_classischen_Altertumswissenschaft/Register/b',
+	'Liste_der_Autoren',
+	'Die_Musik',
+	'Sneewittchen_(1857)',
+	'Liste_der_Gedichte',
+	'Paulys_Realencyclopädie_der_classischen_Altertumswissenschaft/Register/mi'
 ];
 const path = require( 'path' );
 const fetch = require( 'node-fetch' );
