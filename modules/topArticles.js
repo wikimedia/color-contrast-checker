@@ -145,18 +145,12 @@ async function createTestCases( options = {
 	}
 
 	// Use the production URL directly
-	const query = options.query ? `?${options.query}` : '';
+	const query = options.query ? `?${options.query}&` : '?';
 	const testCases = topArticles.flat( 1 ).map( ( article ) => {
 		let host = article.project.replace( /https:\/\/([^\.]*)\.wik/, 'https://$1.wik' );
-		if ( mobile ) {
-			if ( host.indexOf( 'www.' ) > -1 ) {
-				host = host.replace ( 'www.', 'm.' );
-			} else {
-				host = host.replace( /https:\/\/([^\.]*)\.wik/, 'https://$1.m.wik' );
-			}
-		}
+		let fullQuery = mobile ? `${ query }useformat=mobile&useskin=minerva` : query;
 		const encodedTitle = encodeURIComponent( article.article );
-		const url = `${host}/wiki/${encodedTitle}${query}`;
+		const url = `${host}/wiki/${encodedTitle}${fullQuery}`;
 		return { url, title: article.article, query };
 	} );
 
